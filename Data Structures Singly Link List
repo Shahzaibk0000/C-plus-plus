@@ -1,0 +1,159 @@
+#include<iostream>
+using namespace std;
+//--------------LINK LIST--------------------//
+struct Node {
+	int data;
+	Node* next;
+};
+
+class LinkList {
+private:
+	Node* head;
+public:
+	LinkList():head(nullptr){}
+	void add(int data) {
+		Node* ptr = new Node();
+		ptr->data = data;
+		if (head == nullptr) {
+			head = ptr;
+		}
+		else {
+			Node* iterator = head;
+			while (iterator->next != nullptr) {
+				iterator = iterator->next;
+			}
+			iterator->next = ptr;
+		}
+		ptr->next = nullptr;
+	}
+	void dispay() {
+		if (head == NULL)
+			return;
+		cout << "Data: ";
+		Node* iterator = head;
+		while (iterator != nullptr) {
+			cout << iterator->data << " ";
+			iterator = iterator->next;
+		}
+		cout << endl;
+	}
+	int getListSize(Node* head) {
+		if (head == NULL)
+			return 0;
+		int size = 0;
+		Node* iterator = head;
+		while (iterator != nullptr) {
+			iterator = iterator->next;
+			size++;
+		}
+		return size;
+	}
+	void search(int data)
+	{
+		if (head == NULL)
+			return;
+		cout << "\nSearching for " << data << " ... \n";
+		Node* iterator = head;
+		int count = 1;
+		bool isFound = false;
+		while (iterator != nullptr) {
+			if (iterator->data == data)
+			{
+				cout << data << " found at node no " << count << endl << endl;
+				isFound = true;
+				break;
+			}
+			iterator = iterator->next;
+			count++;
+		}
+		if (!isFound)
+		{
+			cout << data << " not found\n\n";
+		}
+	}
+	void sortList()
+	{
+		if (head == NULL)
+			return;
+		Node* iterator1= head;
+		Node* iterator2;
+		int swap = 0;
+		cout << "\n\nList Sorted successfully\n\n";
+		while (iterator1 != NULL)
+		{
+			iterator2 = iterator1->next;
+			while (iterator2 != NULL)
+			{
+				if (iterator1->data > iterator2->data)
+				{
+					swap = iterator1->data;
+					iterator1->data = iterator2->data;
+					iterator2->data = swap;
+				}
+				iterator2 = iterator2->next;
+			}
+			iterator1 = iterator1->next;
+		}
+	}
+	Node* getHead() {
+		return this->head;
+	}
+	void deleteNode(int data)
+	{
+		if (head == NULL)
+			return;
+		Node* iterator = head;
+		Node* previous = head;
+		bool isFound = false;
+		while (iterator != nullptr) {
+			if (iterator->data == data)
+			{
+				isFound = true;
+				break;
+			}
+			previous = iterator;
+			iterator = iterator->next;
+		}
+		if (isFound)
+		{
+			Node* temp = iterator;
+			previous->next = iterator->next;
+			delete[] temp;
+			cout << "\n\n" << data << " deleted successfully\n\n";
+		}
+		else
+		{
+			cout << "\n\n" << data << " not found\n\n";
+		}
+	}
+	~LinkList() {
+		if (head == NULL)
+			return;
+		Node* temp = head;
+		while (temp != nullptr) {
+			head = temp;
+			temp = temp->next;
+			delete[] head;
+		}
+	}
+};
+
+int main()
+{
+	LinkList l;
+	l.add(5);
+	l.add(15);
+	l.add(7);
+	l.add(10);
+	l.add(25);
+	l.add(2);
+	cout << "Size: " << l.getListSize(l.getHead()) << endl;
+	l.dispay();
+	l.search(15);
+	l.search(100);
+	l.sortList();
+	l.dispay();
+	l.deleteNode(7);
+	l.dispay();
+	return 0;
+}
