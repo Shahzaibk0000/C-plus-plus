@@ -1,0 +1,685 @@
+#include<iostream>
+#include<Windows.h>
+using namespace std;
+struct Node
+{
+	int data;
+	Node* lchild;
+	Node* rchild;
+	int count;
+};
+class BST
+{
+	Node* root_ptr;
+	void LRN(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			LRN(p->lchild);
+			LRN(p->rchild);
+			cout << p->data << " ";
+		}
+	}
+
+	void LNR(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			LNR(p->lchild);
+			cout << p->data << " ";
+			LNR(p->rchild);
+		}
+	}
+
+	void NLR(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			cout << p->data << " ";
+			NLR(p->lchild);
+			NLR(p->rchild);
+		}
+	}
+
+	void RNL(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			RNL(p->rchild);
+			cout << p->data << " ";
+			RNL(p->lchild);
+		}
+	}
+
+	void RLN(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			RLN(p->rchild);
+			RLN(p->lchild);
+			cout << p->data << " ";
+		}
+	}
+
+	void NRL(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			cout << p->data << " ";
+			NRL(p->rchild);
+			NRL(p->lchild);
+		}
+	}
+
+	void destorybst(Node* p)
+	{
+		if (p == NULL)
+			return;
+		else
+		{
+			destorybst(p->lchild);
+			destorybst(p->rchild);
+			delete p;
+			p = NULL;
+		}
+	}
+public:
+	BST()
+	{
+		root_ptr = NULL;
+	}
+	void insert(const int value)
+	{
+		Node* new_node = new Node;
+		new_node->count = 0;
+		new_node->data = value;
+		new_node->lchild = NULL;
+		new_node->rchild = NULL;
+		if (root_ptr == NULL)
+		{
+			root_ptr = new_node;
+		}
+		else
+		{
+			Node* temp = root_ptr;
+			while (1)
+			{
+				if (temp->data < value)
+				{
+					if (temp->rchild == NULL)
+					{
+						temp->rchild = new_node;
+						break;
+					}
+					temp = temp->rchild;
+				}
+				else if (temp->data > value)
+				{
+					if (temp->lchild == NULL)
+					{
+						temp->lchild = new_node;
+						break;
+					}
+					temp = temp->lchild;
+				}
+				else
+				{
+					temp->count++;
+					break;
+				}
+			}
+		}
+	}
+	void printLNR()
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nLNR: ";
+			LNR(root_ptr);
+			cout << endl;
+		}
+	}
+
+	void printRNL()
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nRNL: ";
+			RNL(root_ptr);
+			cout << endl;
+		}
+	}
+
+	void printRLN()
+	{
+		if (root_ptr == NULL) {
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nRLN: ";
+			RLN(root_ptr);
+			cout << endl;
+		}
+	}
+
+	void printLRN()
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nLRN: ";
+			LRN(root_ptr);
+			cout << endl;
+		}
+	}
+
+	void printNLR()
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nNLR: ";
+			NLR(root_ptr);
+			cout << endl;
+		}
+	}
+
+	void printNRL()
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else
+		{
+			cout << endl;
+			cout << "\nNRL: ";
+			NRL(root_ptr);
+			cout << endl;
+		}
+	}
+
+	bool deletenode(int value)
+	{
+		bool found = false;
+		if (root_ptr == NULL) {
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY";
+			Sleep(1000);
+			system("cls");
+		}
+		else if (root_ptr->lchild == NULL && root_ptr->rchild == NULL)
+		{
+			if (root_ptr->data == value)
+			{
+				if (root_ptr->count > 1)
+					root_ptr->count = root_ptr->count - 1;
+				else
+				{
+					delete root_ptr;
+					root_ptr = NULL;
+				}
+
+				found = true;
+			}
+		}
+
+		else if (value == root_ptr->data && root_ptr->lchild == NULL && root_ptr->rchild != NULL)
+		{
+			Node* tobedeleted = root_ptr;
+			root_ptr = root_ptr->lchild;
+			delete tobedeleted;
+			tobedeleted = NULL;
+			found = true;
+		}
+		else if (value == root_ptr->data && root_ptr->lchild != NULL && root_ptr->rchild == NULL)
+		{
+			Node* tobedeleted = root_ptr;
+			root_ptr = root_ptr->rchild;
+			delete tobedeleted;
+			tobedeleted = NULL;
+			found = true;
+		}
+		else if (value == root_ptr->data && root_ptr->lchild != NULL && root_ptr->rchild != NULL)
+		{
+			Node* trial = root_ptr;
+			trial = trial->lchild;
+
+			while (1)
+			{
+				if (trial->rchild == NULL)
+					break;
+				trial = trial->rchild;
+			}
+			value = trial->data;
+			root_ptr->data = value;
+		}
+		else
+		{
+			Node* temp = new Node;
+			temp = root_ptr;
+
+			while (1)
+			{
+				if (temp->lchild != NULL && temp->lchild->data == value)
+				{
+
+					if (temp->lchild->count > 1)
+					{
+						temp->lchild->count--;
+						found = true;
+						break;
+					}
+					else
+					{
+						if (temp->lchild->rchild == NULL && temp->lchild->lchild == NULL)
+						{
+							delete temp->lchild;
+							temp->lchild = NULL;
+							found = true;
+							break;
+						}
+
+						else if (temp->lchild->lchild != NULL && temp->lchild->rchild == NULL)
+						{
+							Node* t = new Node;
+							t = temp->lchild;
+
+							temp->lchild = t->lchild;
+
+							delete t;
+							t = NULL;
+
+							found = true;
+							break;
+						}
+
+						else if (temp->lchild->lchild == NULL && temp->lchild->rchild != NULL)
+						{
+							Node* t = new Node;
+							t = temp->lchild;
+							temp->lchild = t->rchild;
+							delete t;
+							t = NULL;
+							found = true;
+							break;
+						}
+						else if (temp->lchild->lchild != NULL && temp->lchild->rchild != NULL)
+						{
+							cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tEnterED" << endl;
+							Node* trial = temp->lchild;
+
+							trial = trial->lchild;
+
+							while (1)
+							{
+								if (trial->rchild == NULL)
+									break;
+								trial = trial->rchild;
+							}
+							value = trial->data;
+							temp->lchild->data = value;
+							temp = temp->lchild;
+						}
+					}
+				}
+				else if (temp->rchild != NULL && temp->rchild->data == value)
+				{
+
+					if (temp->rchild->count > 1)
+					{
+						temp->rchild->count--;
+						found = true;
+						break;
+					}
+					else
+					{
+						if (temp->rchild->rchild == NULL && temp->rchild->lchild == NULL)
+						{
+							delete temp->rchild;
+							temp->rchild = NULL;
+
+							found = true;
+							break;
+						}
+
+						else if (temp->rchild->lchild != NULL && temp->rchild->rchild == NULL)
+						{
+							Node* DeletedNode = new Node;
+							DeletedNode = temp->rchild;
+
+							temp->rchild = DeletedNode->lchild;
+
+							delete DeletedNode;
+							DeletedNode = NULL;
+
+							found = true;
+							break;
+						}
+						else if (temp->rchild->lchild == NULL && temp->rchild->rchild != NULL)
+						{
+							Node* t = new Node;
+							t = temp->rchild;
+
+							temp->rchild = t->rchild;
+
+							delete t;
+							t = NULL;
+
+							found = true;
+							break;
+						}
+						else if (temp->rchild->lchild != NULL && temp->rchild->rchild != NULL)
+						{
+							cout << "EnterED" << endl;
+							Node* trial = temp->rchild;
+
+							trial = trial->lchild;
+
+							while (1)
+							{
+								if (trial->rchild == NULL)
+									break;
+								trial = trial->rchild;
+							}
+
+							value = trial->data;
+							temp->rchild->data = value;
+							temp = temp->rchild;
+						}
+					}
+				}
+
+				if (value > temp->data)
+					temp = temp->rchild;
+				else if (value < temp->data)
+					temp = temp->lchild;
+				if (temp == NULL)
+					break;
+			}
+			return found;
+		}
+
+		return found;
+	}
+
+	bool search(int value)
+	{
+		if (root_ptr == NULL)
+		{
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\BST IS EMPTY | NO OF COMPARISONS: 0";
+			Sleep(1000);
+			system("cls");
+			return false;
+		}
+		else if (root_ptr->lchild == NULL && root_ptr->rchild == NULL)
+		{
+			if (root_ptr->data == value)
+			{
+				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE NOT FOUND |  NUMBER OF COMPARIONS : 0 | LEVEL: 1";
+				return true;
+			}
+			else
+			{
+				system("cls");
+				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\NOT FOUND | NO OF COMPARISONS: 0";
+				Sleep(1000);
+				system("cls");
+				return false;
+			}
+		}
+		else
+		{
+			bool check = false;
+			Node* temp = new Node;
+			temp = root_ptr;
+			int level = 1;
+			while (1)
+			{
+				if (temp->data == value)
+				{
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE FOUND |  NUMBER OF COMPARIONS : " << level - 1 << " | LEVEL: " << level;
+					Sleep(1000);
+					system("pause");
+					system("cls");
+					check = true;
+					break;
+				}
+				if (value < temp->data)
+				{
+					temp = temp->lchild;
+				}
+				else
+				{
+					temp = temp->rchild;
+				}
+				level++;
+
+				if (temp == NULL && check == false)
+				{
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE NOT FOUND |  NUMBER OF COMPARIONS : " << level - 1;
+					Sleep(1000);
+					system("cls");
+					break;
+				}
+			}
+		}
+	}
+
+	int getLeafCount(struct Node* node)
+	{
+		if (node == NULL)
+			return 0;
+		if (node->lchild == NULL && node->rchild == NULL)
+			return 1;
+		else
+			return getLeafCount(node->lchild) +
+			getLeafCount(node->rchild);
+	}
+
+	int getNonleafCount(struct Node* root) {
+		if (root == NULL || (root->lchild == NULL && root->rchild == NULL)) {
+			return 0;
+		}
+		return 1 + getNonleafCount(root->lchild) + getNonleafCount(root->rchild);
+	}
+
+	Node* getNode() {
+		return this->root_ptr;
+	}
+
+	int SumOfRight(Node* root) {
+		if (root == NULL)
+			return 0;
+		return (root->data + SumOfRight(root->rchild));
+	}
+
+	int SumOfLeft(Node* root) {
+		if (root == NULL)
+			return 0;
+		return (root->data + SumOfLeft(root->lchild));
+	}
+
+	void mirror(Node* root)
+	{
+		if (root == NULL)return;
+		mirror(root->lchild);
+		mirror(root->rchild);
+		Node* temp = root->lchild;
+		root->lchild = root->rchild;
+		root->rchild = temp;
+	}
+	~BST()
+	{
+		if (root_ptr != NULL)
+		{
+			destorybst(root_ptr);
+			root_ptr = NULL;
+		}
+	}
+};
+
+void menu();
+
+int main()
+{
+	BST obj;
+	int select;
+	int value;
+	while (true)
+	{
+		menu();
+		cin >> select;
+		cout << "" << endl;
+
+		if (select == 1)
+		{
+			cout << "\t\t\t\tEnter value: ";
+			cin >> value;
+			obj.insert(value);
+			system("cls");
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE INSERTED SUCCESSFULLY . . .";
+			Sleep(1000);
+			system("cls");
+		}
+		else if (select == 2)
+		{
+			obj.printLNR();
+			obj.printRNL();
+			obj.printRLN();
+			obj.printLRN();
+			obj.printNLR();
+			obj.printNRL();
+			system("pause");
+		}
+		else if (select == 3)
+		{
+			system("cls");
+			cout << "TOTAL LEAF NODES: " << obj.getLeafCount(obj.getNode()) << endl;
+			system("pause");
+		}
+		else if (select == 4)
+		{
+			system("cls");
+			cout << "TOTAL NON-LEAF NODES: " << obj.getNonleafCount(obj.getNode()) << endl;
+			system("pause");
+		}
+		else if (select == 5)
+		{
+			system("cls");
+			cout << "Sum of right sub Tree: " << obj.SumOfRight(obj.getNode()) << endl;
+			system("pause");
+		}
+		else if (select == 6)
+		{
+			system("cls");
+			cout << "Sum of left sub Tree: " << obj.SumOfLeft(obj.getNode()) << endl;
+			system("pause");
+		}
+		else if (select == 7)
+		{
+			obj.printLNR();
+			obj.mirror(obj.getNode());
+			obj.printLNR();
+			system("pause");
+		}
+		else if (select == 8)
+		{
+			cout << "\t\t\t\tEnter value: ";
+			cin >> value;
+			obj.search(value);
+			cout << endl;
+			system("pause");
+		}
+		else if (select == 9)
+		{
+			cout << "\t\t\t\tEnter value: ";
+			cin >> value;
+			bool isFound = obj.deletenode(value);
+			system("cls");
+			if (isFound)
+			{
+				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE Deleted SUCCESSFULLY . . .";
+			}
+			else
+			{
+				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tVALUE NOT FOUND . . .";
+			}
+			Sleep(1000);
+			system("cls");
+		}
+		else if (select == 10)
+		{
+			break;
+		}
+	}
+}
+
+void menu()
+{
+	system("cls");
+	cout << "\t\t\t\t1) INSERT VALUE" << endl;
+	cout << "\t\t\t\t2) DISPLAY" << endl;
+	cout << "\t\t\t\t3) Total no of leaf" << endl;
+	cout << "\t\t\t\t4) Total no of non-leaf" << endl;
+	cout << "\t\t\t\t5) Sum of left sun tree" << endl;
+	cout << "\t\t\t\t6) Sum of right sun tree" << endl;
+	cout << "\t\t\t\t7) Mirror" << endl;
+	cout << "\t\t\t\t8) Search" << endl;
+	cout << "\t\t\t\t9) Search and Delete" << endl;
+	cout << "\t\t\t\t10) EXIT" << endl;
+	cout << "\t\t\t\tSelect: ";
+}
