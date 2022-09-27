@@ -1,0 +1,57 @@
+#include<iostream>
+using namespace std;
+
+//--------------STACK--------------------//
+template<class T>
+class Stack {
+private:
+	T* buffer;
+	int currentIndex;
+	int count;
+public:
+	Stack(int size = 0) { this->buffer = new T[size]; this->count = size; this->currentIndex = 0; }
+	void push(T element) {
+		if (currentIndex >= count) { cout << "\n\nLimit bound exception\n\n"; }
+		else { this->buffer[currentIndex++] = element; }
+	}
+	void initilizeStack(int size) {
+		if (count == 0)
+		{
+			this->buffer = new T[size];
+			this->count = size;
+			this->currentIndex = 0;
+	}
+	else {
+			cout << "\n\nAlready Initilized\n\n";
+		}
+	}
+	T pop(){ return this->buffer[--currentIndex]; }
+	T Top() { return this->buffer[currentIndex-1]; }
+	void displayStack() {
+		for (int i = 0; i < currentIndex; i++) {
+			cout << buffer[i] << " ";
+		}
+	}
+	int getStackCurrentSize() const { return this->currentIndex; }
+	void distroyStack() {
+		delete[] this->buffer;
+		this->currentIndex = 0;
+		this->count = 0;
+	}
+};
+
+int main()
+{
+	Stack<int> s;
+	s.initilizeStack(5);
+	s.push(1);
+	s.push(2);
+	s.push(3);
+	s.push(4);
+	s.displayStack();
+	cout << "\nTop: " << s.Top() << endl;
+	cout << "poped: " << s.pop() << endl;
+	s.displayStack();
+	s.distroyStack();
+	return 0;
+}
