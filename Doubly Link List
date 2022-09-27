@@ -1,0 +1,203 @@
+#include<iostream>
+using namespace std;
+
+struct Node {
+	int data;
+	Node* previous;
+	Node* next;
+};
+
+class DoublyLinkList {
+	Node* head;
+	int count;
+public:
+	DoublyLinkList()
+	{
+		head = NULL;
+		count = 0;
+	}
+	void addAtHead(int data)
+	{
+		Node* ptr = new Node();
+		ptr->data = data;
+		if (head == NULL)
+		{
+			head = ptr;
+			head->next = NULL;
+			head->previous = NULL;
+		}
+		else
+		{
+			ptr->next = head;
+			ptr->next->previous = ptr;
+			head = ptr;
+		}
+		count++;
+	}
+	void addAtTail(int data)
+	{
+		Node* ptr = new Node();
+		ptr->data = data;
+		if (head == NULL)
+		{
+			head = ptr;
+			head->next = NULL;
+			head->previous = NULL;
+		}
+		else
+		{
+			Node* iterator = head;
+			while (iterator->next != NULL)
+			{
+				iterator = iterator->next;
+			}
+			ptr->previous = iterator;
+			iterator->next = ptr;
+			ptr->next = NULL;
+		}
+		count++;
+	}
+	void insertAtPosition(int pos ,int data)
+	{
+		if (pos > count)
+		{
+			cout << "\n\nIllegalPositionException\n\n";
+		}
+		else
+		{
+			Node* ptr = new Node();
+			ptr->data = data;
+
+			Node* iterator = head;
+			for (int i = 1; i < pos-1; i++)
+			{
+				iterator = iterator->next;
+			}
+			if (iterator->next == NULL)
+			{
+				iterator->next = ptr;
+				ptr->previous = iterator;
+				ptr->next = NULL;
+			}
+			else
+			{
+				ptr->next = iterator->next;
+				ptr->previous = iterator;
+				iterator->next = ptr;
+			}
+			count++;
+		}
+	}
+	int middleNode()
+	{
+		if (head != NULL)
+		{
+			if (count > 1)
+			{
+				Node* iterator = head;
+				for (int i = 0; i < count / 2; i++)
+				{
+					iterator = iterator->next;
+				}
+				return iterator->data;
+			}
+			else
+			{
+				return head->data;
+			}
+		}
+		else
+		{
+			cout << "\n\nList Not Found\n\n";
+		}
+	}
+	void display()
+	{
+		Node* iterator = head;
+		cout << "Data: ";
+		while (iterator != NULL)
+		{
+			//cout << iterator->previous << "\t" << iterator << "\t" << iterator->next << "\t" << iterator->data << endl;
+			cout << iterator->data << " ";
+			iterator = iterator->next;
+		}
+	}
+	void deleteFromHead()
+	{
+		if (head == NULL)
+		{
+			cout << "\n\nList Not Found\n\n";
+		}
+		else
+		{
+			Node* ptr = head;
+			head = head->next;
+			delete[] ptr;
+			count--;
+		}
+	}
+	void deleteFromTail()
+	{
+		if (head == NULL)
+		{
+			cout << "\n\nList Not Found\n\n";
+		}
+		else
+		{
+			Node* iterator = head;
+			for(int i = 1 ; i < count - 1 ; i++)
+			{
+				iterator = iterator->next;
+			}
+			Node* ptr = iterator->next;
+			iterator->next = NULL;
+			delete[] ptr;
+			count--;
+		}
+	}
+	void deleteFromPosition(int pos)
+	{
+		if (pos > count)
+		{
+			cout << "\n\nIllegalPositionException\n\n";
+		}
+		else
+		{
+			Node* iterator = head;
+			for (int i = 1; i < pos - 1; i++)
+			{
+				iterator = iterator->next;
+			}
+			Node* ptr = iterator->next;
+			iterator->next = iterator->next->next;
+			iterator->next->previous = iterator;
+			delete[]ptr;
+			count--;
+		}
+	}
+};
+
+int main()
+{
+	DoublyLinkList d;
+	d.addAtHead(5);
+	d.addAtHead(4);
+	d.addAtHead(3);
+	d.addAtHead(2);
+	d.addAtHead(1);
+	d.addAtTail(6);
+	d.addAtTail(7);
+	d.addAtTail(8);
+	d.addAtTail(9);
+	d.addAtTail(10);
+	d.insertAtPosition(10, 11);
+	d.deleteFromTail();
+	d.deleteFromHead();
+	d.display();
+	d.deleteFromPosition(6);
+	cout << "\nMiddle: " << d.middleNode() << endl;
+	d.display();
+	cout << endl;
+	system("pause");
+	return 0;
+}
