@@ -1,0 +1,342 @@
+#include<iostream>
+using namespace std;
+
+// To asure that title number is unique or not
+double ptr[100] = {};
+int count1 = 0;
+// To asure that title number is unique or not
+bool isUnique(double* arr, double num);
+
+//Start:
+class BankAccount {
+private:
+	char* name;
+	double number;
+	double balance;
+	static int count;
+public:
+	BankAccount()
+	{
+		count++;
+		this->name = nullptr;
+		this->number = 0;
+		this->balance = 0.0;
+	}
+	BankAccount(const char* n, double num, double b)
+	{
+		count++;
+		if (n != nullptr)
+		{
+			int size = strlen(n);
+			this->name = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->name[i] = n[i];
+			}
+			this->name[size] = '\0';
+		}
+		else
+		{
+			this->name = nullptr;
+		}
+		if (num < 0)
+		{
+			this->number = 0;
+		}
+		else
+		{
+			if (isUnique(ptr, num))
+			{
+				this->number = num;
+				ptr[count1] = num;
+				count1++;
+			}
+			else
+			{
+				cout << "\n\t\tError\nAccount Number is not unique, Enter a Unique number with setter Function.\n" << endl;
+				this->number = 0;
+			}
+		}
+		if (b < 0)
+		{
+			this->balance = 0.0;
+		}
+		else
+		{
+			this->balance = b;
+		}
+	}
+	BankAccount(const BankAccount& obj)
+	{
+		count++;
+		if (obj.name != nullptr)
+		{
+			int size = strlen(obj.name);
+			this->name = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->name[i] = obj.name[i];
+			}
+			this->name[size] = '\0';
+		}
+		else
+		{
+			this->name = nullptr;
+		}
+		if (obj.number < 0)
+		{
+			this->number = 0;
+		}
+		else
+		{
+			this->number = obj.number;
+		}
+		if (obj.balance < 0)
+		{
+			this->balance = 0.0;
+		}
+		else
+		{
+			this->balance = obj.balance;
+		}
+	}
+	void set_accountTitle(const char* n)
+	{
+		if (this->name != nullptr)
+		{
+			delete[] this->name;
+		}
+		int size = strlen(n);
+		this->name = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			this->name[i] = n[i];
+		}
+		this->name[size] = '\0';
+	}
+	void set_accountNumber(double num)
+	{
+		if (isUnique(ptr, num))
+		{
+			this->number = num;
+			cout << "Account Number of " << this->name << " is set." << endl;
+		}
+		else
+		{
+			while (1)
+			{
+				cout << "\n\t\tError\nAccount Number is not unique, Enter a Unique number.\n" << endl;
+				cin >> num;
+				if (isUnique(ptr, num))
+				{
+					this->number = num;
+					cout << "\n\nAccount Number of " << this->name << " is set.\n" << endl;
+					break;
+				}
+			}
+		}
+	}
+	void deposit(double amount)
+	{
+		this->balance = this->balance + amount;
+	}
+	void withdrawal(double amount)
+	{
+		this->balance = this->balance - amount;
+	}
+	const char* getName() const {
+		return this->name;
+	}
+	double getNumber() const {
+		return this->number;
+	}
+	double getBalance() const {
+		return this->balance;
+	}
+	static int getCount() {
+		return count;
+	}
+	void print() const {
+		cout << "\t Account Index::Account no: " << count << endl << endl;
+		cout << "Account Title: " << this->name << endl;
+		cout << "Account Number: " << this->number << endl;
+		cout << "Available Balance: " << this->balance << endl;
+	}
+};
+
+class Savings :public BankAccount {
+private:
+	double interestRate;
+public:
+	Savings()
+	{
+		this->interestRate = 0.0;
+	}
+	Savings(const char* n, double num, double b, double intRate) :BankAccount(n, num, b)
+	{
+		this->interestRate = intRate;
+	}
+	double get_interestRate() const {
+		return (getBalance() / 100) * interestRate;
+	}
+	void print() const {
+		BankAccount::print();
+		cout << "Interest Rate: " << get_interestRate() << endl;
+		cout << "\n-------------------------------------------------------\n" << endl;
+	}
+};
+
+class Checking :public BankAccount {
+private:
+	double chargedFee;
+public:
+	Checking()
+	{
+		this->chargedFee = 0.0;
+	}
+	Checking(const char* n, double num, double b, double fee) :BankAccount(n, num, b)
+	{
+		if (fee < 0)
+		{
+			this->chargedFee = 0.0;
+		}
+		else
+		{
+			this->chargedFee = fee;
+		}
+	}
+	double get_chargedFee() const {
+		return this->chargedFee;
+	}
+	void print() const {
+		BankAccount::print();
+		cout << "Fee Charged: " << this->chargedFee << endl;
+		cout << "\n-------------------------------------------------------\n" << endl;
+	}
+};
+
+class Current :public BankAccount {
+private:
+	double chargedFee;
+	double requiredBalance;
+public:
+	Current()
+	{
+		this->chargedFee = 0.0;
+		this->requiredBalance = 0.0;
+	}
+	Current(const char* n, double num, double b, double fee, double req) :BankAccount(n, num, b)
+	{
+		if (fee < 0)
+		{
+			this->chargedFee = 0.0;
+		}
+		else
+		{
+			this->chargedFee = fee;
+		}
+		if (req < 0)
+		{
+			this->requiredBalance = 0.0;
+		}
+		else
+		{
+			this->requiredBalance = req;
+		}
+	}
+	double get_chargedFee() const {
+		return this->chargedFee;
+	}
+	double get_requiredBalance() const {
+		return this->requiredBalance;
+	}
+	void print() const {
+		BankAccount::print();
+		cout << "Fee Charged: " << this->chargedFee << endl;
+		cout << "Minimum Balance Required: " << this->requiredBalance << endl;
+		cout << "\n-------------------------------------------------------\n" << endl;
+	}
+};
+
+class Investment :public BankAccount {
+private:
+	double chargedFee;
+	double requiredBalance;
+	double profitPercent;
+public:
+	Investment()
+	{
+		this->chargedFee = 0.0;
+		this->requiredBalance = 0.0;
+		this->profitPercent = 0.0;
+	}
+	Investment(const char* n, double num, double b, double fee, double req, double profit) :BankAccount(n, num, b)
+	{
+		if (fee < 0)
+		{
+			this->chargedFee = 0.0;
+		}
+		else
+		{
+			this->chargedFee = fee;
+		}
+		if (req < 0)
+		{
+			this->requiredBalance = 0.0;
+		}
+		else
+		{
+			this->requiredBalance = req;
+		}
+		if (profit < 0)
+		{
+			this->profitPercent = 0.0;
+		}
+		else
+		{
+			this->profitPercent = profit;
+		}
+	}
+	double get_chargedFee() const {
+		return this->chargedFee;
+	}
+	double get_requiredBalance() const {
+		return this->requiredBalance;
+	}
+	double get_profitPercent() const {
+		return this->profitPercent;
+	}
+	void print() const {
+		BankAccount::print();
+		cout << "Fee Charged: " << this->chargedFee << endl;
+		cout << "Minimum Balance Required: " << this->requiredBalance << endl;
+		cout << "Percent profit Remember: " << this->profitPercent << endl;
+		cout << "\n-------------------------------------------------------\n" << endl;
+	}
+};
+
+int BankAccount::count = 0;
+
+int main()
+{
+	Savings s1("Shahzaib Khan", 12345678911112, 15000.234, 4.00);
+	s1.deposit(10000.746);
+	s1.withdrawal(20000.00);
+	Checking c1("Shahzaib Khan", 12345678911654, 13000.23, 5.1);
+	s1.print();
+	c1.print();
+	system("pause");
+	return 0;
+}
+
+bool isUnique(double* arr, double num)
+{
+	for (int i = 0; i < 100; i++)
+	{
+		if (arr[i] == num)
+		{
+			return false;
+		}
+	}
+	return true;
+}
