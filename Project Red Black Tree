@@ -1,0 +1,783 @@
+// project 4th semester
+#include<iostream>
+#include<fstream>
+using namespace std;
+struct Node
+{
+	int data;
+	Node* parent;
+	Node* lchild;
+	Node* rchild;
+	bool isRed;
+	int count;
+};
+class RB_BST
+{
+	Node* root;
+public:
+	RB_BST()
+	{
+		root = NULL;
+	}
+	//1
+	void insert(const int& value)
+	{
+		Node* newnode = new Node;
+		newnode->data = value;
+		newnode->parent = NULL;
+		newnode->lchild = NULL;
+		newnode->rchild = NULL;
+		newnode->isRed = true;
+		newnode->count = 1;
+		bool duplicatecheck = false;
+		insertrecursive(root, newnode, duplicatecheck);
+		if (duplicatecheck == false)
+		{
+			fixInsertTree(newnode);
+		}
+	}
+	//2
+	bool searchtree(int value)
+	{
+		return searchRecursive(root, value);
+	}
+	//3
+	void displayPreorder()
+	{
+		cout << "                           ~~~~~~~RED BLACK TREE PRE-ORDER DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Preorder(root);
+		cout << endl;
+	}
+	//4
+	void displayInorder()
+	{
+		cout << "                            ~~~~~~~RED BLACK TREE IN-ORDER DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Inorder(root);
+		cout << endl;
+	}
+	//5
+	void displayPostorder()
+	{
+		cout << "                            ~~~~~~~RED BLACK TREE POST-ORDER DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Postorder(root);
+		cout << endl;
+	}
+	//6
+	void displayPreorder2()
+	{
+		cout << "                           ~~~~~~~RED BLACK TREE PRE-ORDER 2 DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Preorder2(root);
+		cout << endl;
+	}
+	//7
+	void displayInorder2()
+	{
+		cout << "                           ~~~~~~~RED BLACK TREE IN-ORDER 2 DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Inorder2(root);
+		cout << endl;
+	}
+	//8
+	void displayPostorder2()
+	{
+		cout << "                           ~~~~~~~RED BLACK TREE POST-ORDER 2 DISPLAY!~~~~~~~                             " << endl;
+		cout << endl;
+		Postorder2(root);
+		cout << endl;
+	}
+	//9
+	void displayparent(int value)
+	{
+		if (root->data == value)
+		{
+			cout << "                ~~~~~Node found but its a Root Node So it doesn't have a Parent Node~~~~~               " << endl;
+		}
+		else if (!printparent(root, value))
+		{
+			cout << "                           ~~~~~~~Value Not present in the RED BLACK TREE~~~~~~~                          " << endl;
+		}
+	}
+	//10
+	bool readfile()
+	{
+		ifstream fin;
+		int temp = 0;
+		fin.open("input.txt");
+		if (fin.is_open())
+		{
+			while (!fin.eof())
+			{
+				fin >> temp;
+				insert(temp);
+			}
+			fin.close();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	//11
+	void deleteduplicates()
+	{
+		delete_duplicates(root);
+	}
+	//12
+	void destroytree()
+	{
+		deleteallnode(root);
+	}
+	bool isEmpty()
+	{
+		return (root == NULL);
+	}
+	~RB_BST()
+	{
+		deleteallnode(root);
+	}
+private:
+	//1
+	void insertrecursive(Node*& r, Node*& newnode, bool& duplicatecheck)
+	{
+		if (r == NULL)
+		{
+			r = newnode;
+			return;
+		}
+		if (newnode->data < r->data)
+		{
+			insertrecursive(r->lchild, newnode, duplicatecheck);
+			r->lchild->parent = r;
+		}
+		else if (newnode->data > r->data)
+		{
+			insertrecursive(r->rchild, newnode, duplicatecheck);
+			r->rchild->parent = r;
+		}
+		else if (newnode->data == r->data)
+		{
+			duplicatecheck = true;
+			r->count++;
+			delete[] newnode;
+			newnode = NULL;
+		}
+	}
+	void rotateleft(Node*& r, Node*& n)
+	{
+		Node* n_right = n->rchild;
+		n->rchild = n_right->lchild;
+		if (n->rchild != NULL)
+		{
+			n->rchild->parent = n;
+		}
+		n_right->parent = n->parent;
+		if (n->parent == NULL)
+		{
+			r = n_right;
+		}
+		else if (n == n->parent->lchild)
+		{
+			n->parent->lchild = n_right;
+		}
+		else
+		{
+			n->parent->rchild = n_right;
+		}
+		n_right->lchild = n;
+		n->parent = n_right;
+	}
+	void rotateright(Node*& r, Node*& n)
+	{
+		Node* n_left = n->lchild;
+		n->lchild = n_left->rchild;
+		if (n->lchild != NULL)
+		{
+			n->lchild->parent = n;
+		}
+		n_left->parent = n->parent;
+		if (n->parent == NULL)
+		{
+			r = n_left;
+		}
+		else if (n == n->parent->lchild)
+		{
+			n->parent->lchild = n_left;
+		}
+		else
+		{
+			n->parent->rchild = n_left;
+		}
+		n_left->rchild = n;
+		n->parent = n_left;
+	}
+	void fixInsertTree(Node*& newnode)
+	{
+		Node* grand_parent = NULL;
+		Node* parent_nnode = NULL;
+		while ((newnode != root) && (newnode->isRed != false) && (newnode->parent->isRed == true))
+		{
+			parent_nnode = newnode->parent;
+			grand_parent = newnode->parent->parent;
+			if (parent_nnode == grand_parent->lchild)
+			{
+				Node* uncle_newnode = grand_parent->rchild;
+				if (uncle_newnode != NULL && uncle_newnode->isRed == true)
+				{
+					grand_parent->isRed = true;
+					parent_nnode->isRed = false;
+					uncle_newnode->isRed = false;
+					newnode = grand_parent;
+				}
+				else
+				{
+					if (newnode == parent_nnode->rchild)
+					{
+						rotateleft(root, parent_nnode);
+						newnode = parent_nnode;
+						parent_nnode = newnode->parent;
+					}
+					rotateright(root, grand_parent);
+					swap(parent_nnode, grand_parent);
+					newnode = parent_nnode;
+				}
+			}
+			else
+			{
+				Node* uncle_newnode = grand_parent->lchild;
+				if ((uncle_newnode != NULL) && (uncle_newnode->isRed == true))
+				{
+					grand_parent->isRed = true;
+					parent_nnode->isRed = false;
+					uncle_newnode->isRed = false;
+					newnode = grand_parent;
+				}
+				else
+				{
+					if (newnode == parent_nnode->lchild)
+					{
+						rotateright(root, parent_nnode);
+						newnode = parent_nnode;
+						parent_nnode = newnode->parent;
+					}
+					rotateleft(root, grand_parent);
+					swap(parent_nnode, grand_parent);
+					newnode = parent_nnode;
+				}
+			}
+		}
+		root->isRed = false;
+	}
+	void swap(Node*& x, Node*& y)
+	{
+		bool temp = x->isRed;
+		x->isRed = y->isRed;
+		y->isRed = temp;
+	}
+	//2
+	bool searchRecursive(Node* r, int value)
+	{
+		if (r == NULL)
+		{
+			return false;
+		}
+		else if (r->data == value)
+		{
+			cout << "                        ~~~~~~~VALUE IS PRESENT IN THE RED BLACK TREE!~~~~~~~                        " << endl;
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+			return true;
+		}
+		else if (value < r->data)
+		{
+			return searchRecursive(r->lchild, value);
+		}
+		else
+		{
+			return searchRecursive(r->rchild, value);
+		}
+	}
+	//3
+	void Preorder(Node* r) //NLR
+	{
+		if (r != NULL)
+		{
+			cout << "\t\t Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+			Preorder(r->lchild);
+			Preorder(r->rchild);
+		}
+	}
+	//4
+	void Inorder(Node* r)
+	{
+		if (r != NULL)
+		{
+			Inorder(r->lchild);
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+			Inorder(r->rchild);
+		}
+	}
+	//5
+	void Postorder(Node* r) //LRN
+	{
+		if (r != NULL)
+		{
+			Postorder(r->lchild);
+			Postorder(r->rchild);
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+		}
+	}
+	//6
+	void Preorder2(Node* r) //NRL
+	{
+		if (r != NULL)
+		{
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+			Preorder2(r->rchild);
+			Preorder2(r->lchild);
+		}
+	}
+	//7
+	void Inorder2(Node* r) //RNL
+	{
+		if (r != NULL)
+		{
+			Inorder2(r->rchild);
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+			Inorder2(r->lchild);
+		}
+	}
+	//8
+	void Postorder2(Node* r)// RLN
+	{
+		if (r != NULL)
+		{
+			Postorder2(r->rchild);
+			Postorder2(r->lchild);
+			cout << "\t\t\t\t  Data: " << r->data << "   Color: ";
+			if (r->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << "   Count: " << r->count << endl;
+		}
+	}
+	//9
+	bool printparent(Node* r, int value)
+	{
+		if (r == NULL)
+		{
+			return false;
+		}
+		else if (r->data == value)
+		{
+			cout << "\t\tNode " << value << " Parent is " << r->parent->data << " Color: ";
+			if (r->parent->isRed == true)
+			{
+				cout << "Red";
+			}
+			else
+			{
+				cout << "Black";
+			}
+			cout << " Count: " << r->parent->count << endl;
+			return true;
+		}
+		else if (value < r->data)
+		{
+			return printparent(r->lchild, value);
+		}
+		else if (value > r->data)
+		{
+			return printparent(r->rchild, value);
+		}
+	}
+	//10
+	void delete_duplicates(Node*& r)
+	{
+		if (r != NULL)
+		{
+			delete_duplicates(r->lchild);
+			delete_duplicates(r->rchild);
+			if (r->count > 1)
+			{
+				r->count = 1;
+			}
+		}
+	}
+	//12
+	void deleteallnode(Node*& r)
+	{
+		if (r != NULL)
+		{
+			deleteallnode(r->lchild);
+			deleteallnode(r->rchild);
+			delete[] r;
+			r = NULL;
+		}
+	}
+};
+void space();
+void space2();
+void menu();
+int main()
+{
+	RB_BST obj;
+	while (true)
+	{
+		int choice = 0;
+		system("cls");
+		menu();
+		cout << "\t\t\tEnter Choice: "; cin >> choice;
+		if (choice == 1)
+		{
+			int value = 0;
+			cout << endl;
+			cout << "\t\tEnter a value to Insert in RED BLACK TREE: "; cin >> value;
+			obj.insert(value);
+			cout << " _______________________________________________________________________________________________________" << endl;
+			cout << "|                                                                                                       |" << endl;
+			cout << "|                              ~~~~~~~VALUE INSERTED SUCCESSFULLY!~~~~~~~                               |" << endl;
+			cout << "|_______________________________________________________________________________________________________|" << endl;
+			cout << endl;
+			system("pause");
+		}
+		else if (choice == 2)
+		{
+			if (!obj.isEmpty())
+			{
+				int value = 0;
+				cout << "\t\tEnter a value to Search in RED BLACK TREE: "; cin >> value;
+				if (obj.searchtree(value))
+				{
+					cout << endl;
+				}
+				else
+				{
+					cout << " _______________________________________________________________________________________________________" << endl;
+					cout << "|                                                                                                       |" << endl;
+					cout << "|                       ~~~~~~~VALUE IS NOT PRESENT IN THE RED BLACK TREE!~~~~~~~                       |" << endl;
+					cout << "|_______________________________________________________________________________________________________|" << endl;
+					cout << endl;
+				}
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 3)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayPreorder();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 4)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayInorder();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 5)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayPostorder();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 6)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayPreorder2();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 7)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayInorder2();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 8)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				obj.displayPostorder2();
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 9)
+		{
+			if (!obj.isEmpty())
+			{
+				cout << endl;
+				cout << "                                 ~~~~~~~RED BLACK TREE DATA!~~~~~~~                                   " << endl;
+				obj.displayInorder();
+				int value = 0;
+				cout << "\t\t\Enter Node Value of which you want to Print its Parent: "; cin >> value;
+				cout << endl;
+				obj.displayparent(value);
+				cout << endl;
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 10)
+		{
+			if (obj.readfile())
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                 ~~~~~~~FILE SUCCESSFULLY READED AND RED BLACK TREE IS CREATED!~~~~~~~                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                  ~~~~~~~FILE IS NOT PRESENT!~~~~~~~                                   |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+
+		}
+		else if (choice == 11)
+		{
+			if (!obj.isEmpty())
+			{
+				obj.deleteduplicates();
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|        ~~~~~~~ALL DUPLICATE VALUES IF PRESENT IN THE RED BLACK TREE HAVE BEEN DELETED!~~~~~~~         |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 12)
+		{
+			if (!obj.isEmpty())
+			{
+				obj.destroytree();
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                           ~~~~~~~RED BLACK TREE HAVE BEEN DESTROYED!~~~~~~~                           |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			else
+			{
+				cout << " _______________________________________________________________________________________________________" << endl;
+				cout << "|                                                                                                       |" << endl;
+				cout << "|                                ~~~~~~~RED BLACK TREE IS EMPTY!~~~~~~~                                 |" << endl;
+				cout << "|_______________________________________________________________________________________________________|" << endl;
+				cout << endl;
+			}
+			system("pause");
+		}
+		else if (choice == 13)
+		{
+			cout << " _______________________________________________________________________________________________________" << endl;
+			cout << "|                                                                                                       |" << endl;
+			cout << "|                               ~~~~~~~PROGRAM TERMINATED THANKYOU!~~~~~~~                              |" << endl;
+			cout << "|_______________________________________________________________________________________________________|" << endl;
+			cout << endl;
+			system("pause");
+			break;
+		}
+	}
+	return 0;
+}
+void space()
+{
+	for (int i = 1; i <= 30; i++)
+	{
+		cout << " ";
+	}
+}
+void space2()
+{
+	for (int i = 1; i <= 10; i++)
+	{
+		cout << " ";
+	}
+}
+void menu()
+{
+	system("cls");
+	system("color A");
+	space();
+	cout << " ________________________________________________________" << endl;
+	space();
+	cout << "|                                                        |" << endl;
+	space();
+	cout << "|           ~~~~~~RED BLACK TREE PROJECT~~~~~~           |" << endl;
+	space();
+	cout << "|________________________________________________________|" << endl;
+	space2();
+	cout << " _____________________________________________________________________________________" << endl;
+	space();
+	cout << "Tell Us What You Want To Do." << endl;
+	cout << endl;
+	cout << " _______________________________________________________________________________________________________" << endl;
+	cout << "|      Press  1     |      Press  2     |   Press  3  To    |     Press 4  To     |     Press 5  To     |" << endl;
+	cout << "|         To        |         To        |     Pre-Order     |       In-Order      |      Post-Order     |" << endl;
+	cout << "|    Insert Value   |   Search Value    |   Traversal NLR   |    Traversal LNR    |    Traversal LRN    |" << endl;
+	cout << "|___________________|___________________|___________________|_____________________|_____________________|" << endl;
+	cout << " _______________________________________________________________________________________________________" << endl;
+	cout << "|    Press 6  To    |    Press 7  To    |    Press 8  To    |    Press  9  To     |    Press  10 To     |" << endl;
+	cout << "|     Pre-Order     |      In-Order     |     Post-Order    |     Displaying      |   Read Values From  |" << endl;
+	cout << "|  Traversal 2 NRL  |  Traversal 2 RNL  |  Traversal 2 RLN  |   Parent Of A Node  |  A  input.txt  File |" << endl;
+	cout << "|___________________|___________________|___________________|_____________________|_____________________|" << endl;
+	cout << " ___________________________________________________________" << endl;
+	cout << "|    Press 11 To    |    Press  12 To   |    Press 13 To    |" << endl;
+	cout << "|    Delete  All    |  Destroy Complete |        Exit       |" << endl;
+	cout << "| Duplicate  Values |        Tree       |      Program      |" << endl;
+	cout << "|___________________|___________________|___________________|" << endl;
+	cout << endl;
+}
