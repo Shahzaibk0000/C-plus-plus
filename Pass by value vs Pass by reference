@@ -1,0 +1,27 @@
+#include<iostream>
+using namespace std;
+
+void passByValue(int);
+void passByReference(int&);
+
+int main()
+{
+	int buffer = 20;
+	cout << "Buffer: " << buffer << endl;
+	passByValue(buffer);
+	cout << "\nBuffer after pass by value: " << buffer << endl;
+	passByReference(buffer);
+	cout << "\nBuffer after pass by Reference: " << buffer << endl;
+	return 0;
+}
+
+
+void passByValue(int buffer)
+{
+	buffer = 30;
+}
+
+void passByReference(int& buffer)
+{
+	buffer = 30;
+}
