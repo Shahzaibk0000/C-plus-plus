@@ -1,0 +1,108 @@
+#include<iostream>
+using namespace std;
+
+
+class QueueADT
+{
+protected:
+	int* arr;
+	int maxSize;
+public:
+	QueueADT()
+	{
+		maxSize = 20;
+		arr = new int[maxSize];
+	}
+	QueueADT(int size)
+	{
+		maxSize = size;
+		arr = new int[maxSize];
+	}
+	virtual bool isEmpty() const = 0;
+	virtual bool isFull()  const = 0;
+	virtual void initializeQueue() = 0;
+	virtual void enqueue(int) = 0;
+	virtual int dequeue() = 0;
+	virtual void printQueue() const = 0;
+	~QueueADT()
+	{
+		if (arr != nullptr)
+			delete[] arr;
+		cout << "Destroying QueueADT Object." << endl;
+	}
+};
+
+
+class MyQueue : public QueueADT
+{
+	int front;
+	int rear;
+public:
+	MyQueue() : QueueADT(){}
+	MyQueue(int size) : QueueADT(size){}
+	bool isEmpty() const
+	{
+		return (rear - front == 0);
+	}
+	bool isFull() const
+	{
+		return (rear - front == maxSize);
+	}
+	void initializeQueue()
+	{
+		rear = front = 0;
+	}
+	void enqueue(int value)
+	{
+		if (!isFull())
+		{
+			arr[rear % maxSize] = value;
+			rear++;
+		}
+		else
+			cout << "Queue is Full." << endl;
+	}
+	int dequeue()
+	{
+		if (!isEmpty())
+		{
+			int returningValue = arr[front % maxSize];
+			front++;
+			return returningValue;
+		}
+		else
+			cout << "Queue is Empty." << endl;
+		return NULL;
+	}
+	void printQueue() const
+	{
+		if (!isEmpty())
+		{
+			cout << "Max Size: " << maxSize << endl;
+			cout << "Current Size: " << rear - front << endl;
+			for (int i = front; i < rear; i++)
+				cout << i % maxSize << ". " << arr[i % maxSize] << endl;
+		}
+		else
+			cout << "Nothing to Display." << endl;
+	}
+	~MyQueue()
+	{
+		cout << "Destroying MyQueue Object." << endl;
+	}
+};
+
+int main()
+{
+	MyQueue q(5);
+	q.enqueue(1);
+	q.enqueue(2);
+	q.enqueue(3);
+	q.enqueue(4);
+	q.enqueue(5);
+	q.printQueue();
+	q.dequeue();
+	q.printQueue();
+
+	return 0;
+}
