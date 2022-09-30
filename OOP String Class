@@ -1,0 +1,296 @@
+#include <iostream>
+using namespace std;
+class MyString
+{
+private:
+	char* str;
+	int size;
+	int count;
+public:
+
+	MyString();
+	MyString(int);
+	MyString(const MyString&, int, int);
+	MyString& operator =(const MyString&);
+	char& operator[](int);
+	char& operator +(int);
+	MyString operator +(const MyString&);
+	MyString operator ++(int);
+	MyString operator --(int);
+	MyString& operator ++();
+	MyString& operator --();
+	void add(char Alphabet);
+	char* get_str() const;
+	int length() const;
+	void clear();
+	~MyString();
+	friend void print(const MyString&);
+};
+
+void Copy(char* destination, char* source, int first_index, int last_index)
+{
+	for (int i = 0; i < last_index; i++)
+	{
+		destination[first_index] = source[i];
+		first_index++;
+	}
+	destination[first_index] = '\0';
+}
+
+void print(const MyString& obj)
+{
+	if (obj.str[0] != '\0')
+	{
+		cout << obj.str << "\n" << endl;
+	}
+	else
+	{
+		cout << "String is empty\n" << endl;
+	}
+}
+
+MyString::MyString()
+{
+	this->count = 0;
+	this->size = 100;
+	this->str = new char[this->size]{ '\0' };
+}
+
+MyString::MyString(int length)
+{
+	if (length < 1)
+	{
+		this->count = 0;
+		this->size = 0;
+		this->str = NULL;
+	}
+	else
+	{
+		this->count = 0;
+		this->size = length + 1;
+		this->str = new char[this->size]{ '\0' };
+	}
+}
+
+MyString::MyString(const MyString& obj, int first_index, int last_index)
+{
+	this->count = 0;
+	this->size = last_index - first_index + 2;
+	this->str = new char[this->size]{ '\0' };
+	for (int i = first_index - 1; i < last_index; i++)
+	{
+		this->str[count] = obj.str[i];
+		count++;
+	}
+}
+
+MyString& MyString::operator =(const MyString& obj)
+{
+	if (this->str != NULL)
+	{
+		delete[] this->str;
+	}
+	this->count = obj.count;
+	this->size = obj.count + 1;
+	this->str = new char[this->size];
+	Copy(this->str, obj.str, 0, obj.count);
+	return *this;
+}
+
+char& MyString::operator[](int index)
+{
+	if (index < this->size)
+	{
+		return str[index];
+	}
+	exit(0);
+}
+
+char& MyString::operator +(int num)
+{
+
+	this->str[0] = this->str[1];
+	this->str[0] = this->str[0] + 1;
+	return this->str[0];
+}
+
+MyString MyString::operator +(const MyString& obj)
+{
+	MyString temp;
+	temp.count = obj.count + this->count;
+	temp.size = temp.count + 1;
+	temp.str = new char[temp.size]{ '\0' };
+	Copy(temp.str, this->str, 0, this->count);
+	Copy(temp.str, obj.str, this->count, obj.count);
+	return temp;
+}
+
+MyString MyString::operator ++(int)
+{
+	MyString temp;
+	temp.count = this->count++;
+	temp.size = this->size++;
+	temp.str = new char[temp.size]{ '\0' };
+	for (int i = 0; i < temp.count; i++)
+	{
+		temp.str[i] = this->str[i]++;
+	}
+	return temp;
+}
+
+MyString MyString::operator --(int)
+{
+	MyString temp;
+	temp.count = this->count--;
+	temp.size = this->size--;
+	temp.str = new char[temp.size]{ '\0' };
+	for (int i = 0; i < temp.count; i++)
+	{
+		temp.str[i] = this->str[i]--;
+	}
+	return temp;
+}
+
+MyString& MyString::operator ++()
+{
+	for (int i = 0; i < this->count - 1; i++)
+	{
+		++this->str[i];
+	}
+	this->str[this->count] = '\0';
+	return *this;
+}
+
+MyString& MyString::operator --()
+{
+	for (int i = 0; i < this->count; i++)
+	{
+		--this->str[i];
+	}
+	this->str[this->count] = '\0';
+	return *this;
+}
+
+void MyString::add(char Alphabet)
+{
+	if (this->count < this->size)
+	{
+		this->str[count] = Alphabet;
+		count++;
+	}
+}
+
+char* MyString::get_str() const
+{
+	return this->str;
+}
+
+int MyString::length() const
+{
+	return count;
+}
+
+void MyString::clear()
+{
+	if (this->str != NULL)
+	{
+		for (int i = 0; i < count; i++)
+		{
+			this->str[i] = '\0';
+		}
+	}
+	count = 0;
+}
+
+MyString::~MyString()
+{
+
+}
+
+int main()
+{
+	MyString str1;
+	str1.add('[');
+	str1.add('A');
+	str1.add('B');
+	str1.add('C');
+	str1.add('D');
+	str1.add('E');
+	str1.add('F');
+	str1.add('G');
+	str1.add('h');
+	str1.add('i');
+	str1.add('j');
+	str1.add('k');
+	str1.add('l');
+	str1.add('m');
+	str1.add('n');
+	str1.add('o');
+	str1.add('p');
+	str1.add(']');
+	cout << "str1\n";
+	print(str1);
+	cout << "Lenghth of str1 is = " << str1.length() << endl;
+	cout << "str2\n";
+	MyString str2(str1, 2, 9);
+	print(str2);
+	cout << "Lenghth of str2 is = " << str2.length() << endl;
+	cout << "str4\n";
+	const MyString str4;
+	print(str4);
+	cout << "Lenghth of str4 is =" << str4.length() << endl;
+	str1.clear();
+	cout << "After clearing str1\n";
+	print(str1);
+	str1.add('$');
+	cout << "After adding $ to str1\n";
+	print(str1);
+	MyString str3;
+	str3 = str1 + str2;
+	cout << "str3\n";
+	print(str3);
+	MyString str5(5);
+	str5.add('a');
+	str5.add('B');
+	str5.add('c');
+	str5.add('D');
+	str5.add('e');
+	cout << "str5\n";
+	print(str5);
+	str5[0] = str5[1] + 1;
+	print(str5);
+	print(str5++);
+	print(++str5);
+	print(--str5);
+	print(str5--);
+	MyString str8;
+	str8 = str5;
+	cout << "str8\n";
+	print(str8);
+
+	MyString str9;
+	str9.add('B');
+	str9.add('I');
+	str9.add('L');
+	str9.add('A');
+	str9.add('L');
+	str9.add(' ');
+	str9.add('I');
+	str9.add('S');
+	str9.add('H');
+	str9.add('F');
+	str9.add('A');
+	str9.add('Q');
+	cout << "str9\n";
+	++++str9;
+	print(str9);
+	MyString str10;
+	MyString str11;
+	(str11 = str10) = str9;
+
+	cout << "str10\n";
+	print(str10);
+	cout << "str11\n";
+	print(str11);
+	return 0;
+}
