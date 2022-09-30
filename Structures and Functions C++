@@ -1,0 +1,572 @@
+#include <Windows.h>
+#include <cstdlib>
+#include <iostream>
+#include<string>
+using namespace std;
+
+//structures
+struct Course {
+	string name;
+	string id;
+};
+
+struct Student {
+	string name;
+	string id;
+	struct Course courses[3];
+};
+
+//protoTypes
+void display();
+bool isEmpty(Student students[]);
+bool isEmpty_Course(Student students[], int index);
+void displayData(Student students[], int index);
+int studentIndex(Student students[], string id);
+bool isFound(Student students[], string id);
+int isCourse_Found(Student students[], string id, int index);
+bool isUnique_Id(Student students[], string id);
+void sortID(Student students[] , int count);
+void deleteStudent(Student students[], int index , int& count);
+bool isUnique_courseId(Student students[], string id, int index);
+
+//no of total Students you can add
+const int no_of_student = 5;
+const int no_of_courses = 3;
+
+//mainFunction
+int main()
+{
+	char select;
+	Student student;
+	string input;
+	int totalAdded_students = 0;
+	Student students[no_of_student];
+	int studentCount = 0;
+	while (1)
+	{
+		menu:
+		display();
+		cin >> select;
+		switch (select)
+		{
+			case '1':
+				if (studentCount >= 5)
+				{
+					cout << "\n\n\t!...Limit of 5 Excceded...!\n\n";
+				}
+				else
+				{
+					cout << "\n\nEnter name of Student: ";
+					cin.ignore();
+					getline(cin, student.name);
+					cout << "Enter ID of " << student.name << ": ";
+					cin >> student.id;
+					if (student.name == "back" || student.name[0] == 'b' || student.id == "back")
+					{
+						system("cls");
+						goto menu;
+					}
+					if (isUnique_Id(students, student.id))
+					{
+						students[studentCount].name = student.name;
+						students[studentCount].id = student.id;
+						sortID(students, studentCount);
+						studentCount++;
+						totalAdded_students++;
+						cout << "\n\n\tStudent added successfully\n" << endl;
+					}
+					else
+					{
+						cout << "\n\n\t!...ID used, enter a Unique id...!\n\n";
+					}
+				}
+				break;
+			case '2':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\nEnter Student ID to add course: ";
+					cin >> student.id;
+					if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+					{
+						system("cls");
+						goto menu;
+					}
+					if (isFound(students, student.id))
+					{
+						int index = studentIndex(students, student.id);
+						if (isEmpty_Course(students, index))
+						{
+							cout << "\n\n--------------------------------------------------------\n";
+							int courseCount = 0;
+							while (courseCount < no_of_courses)
+							{
+								cout << "Enter NAME of Course no " << courseCount + 1 << " of " << students[index].name << ": ";
+								cin >> students[index].courses[courseCount].name;
+								cout << "Enter ID of Course no " << courseCount + 1 << " of " << students[index].name << ": ";
+								cin >> input;
+								if (isUnique_courseId(students, input, index))
+								{
+									students[index].courses[courseCount].id = input;
+									courseCount++;
+								}
+								else
+								{
+									cout << "\n\n\t!...ID used, enter a Unique id...!\n\n";
+								}
+							}
+							cout << "\n\n\tCourses added successfully\n" << endl;
+							cout << "\n\n--------------------------------------------------------\n";
+						}
+						else
+						{
+							cout << "\n\n\tCourse of " << students[index].name << " is already added\n" << endl;
+						}
+						cout << "\n\n\t!...Press any key to coutinue...!\n" << endl;
+						system("PAUSE");
+					}
+					else
+					{
+						cout << "\n\n\tStudent not Found\n" << endl;
+					}
+				}
+				break;
+			case '3':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\nEnter Student ID to Dispaly Data: ";
+					cin >> student.id;
+					if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+					{
+						system("cls");
+						goto menu;
+					}
+					if (isFound(students, student.id))
+					{
+						int index = studentIndex(students, student.id);
+						cout << "\n\n--------------------------------------------------------\n";
+						cout << "\n\n\t\tSTUDENT NAME\t:\tSTUDENT ID\n" << endl;
+						displayData(students, index);
+						cout << "\n\n--------------------------------------------------------\n";
+						cout << "\n\n\t!...Press any key to coutinue...!\n" << endl;
+						system("PAUSE");
+					}
+					else
+					{
+						cout << "\n\n\tStudent not Found\n" << endl;
+					}
+				}
+				break;
+			case '4':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\n--------------------------------------------------------\n";
+					for (int i = 0; i < studentCount; i++)
+					{
+						cout << "\n\n\t\tSTUDENT NAME\t:\tSTUDENT ID\n" << endl;
+						displayData(students, i);
+						cout << "\n\n--------------------------------------------------------\n";
+					}
+					cout << endl << endl;
+					cout << "\n\n\t!...Press any key to coutinue...!\n" << endl;
+					system("PAUSE");
+				}
+				break;
+			case '5':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\nEnter Student ID to make changes: ";
+					cin >> student.id;
+					if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+					{
+						system("cls");
+						goto menu;
+					}
+					if (isFound(students, student.id))
+					{
+						int index = studentIndex(students, student.id);
+						string select1;
+						again:
+						cout << "\n\nWhat you want to change? (name or id): ";
+						cin >> select1;
+						if (select1 == "name" || select1 == "NAME" || select1[0] == 'N' || select1[0] == 'n')
+						{
+							cout << "\n\nExisting Name is: " << students[index].name;
+							cout << "\n\nEnter new name: ";
+							cin.ignore();
+							getline(cin, students[index].name);
+							if (students[index].name == "back" || students[index].name[0] == 'b' || students[index].name == "B")
+							{
+								system("cls");
+								goto menu;
+							}
+							cout << "\n\n\tChange successfully\n" << endl;
+						}
+						else if (select1 == "id" || select1 == "ID" || select1[0] == 'i' || select1[0] == 'I')
+						{
+						again1:
+							cout << "\n\nExisting ID is: " << students[index].id;
+							cout << "\n\nEnter new id: ";
+							cin >> student.id;
+							if (isUnique_Id(students, student.id))
+							{
+								students[index].id = student.id;
+								cout << "\n\n\tChange successfully\n" << endl;
+							}
+							else
+							{
+								cout << "\n\n\tID used ... Enter a Unique ID\n" << endl;
+								goto again1;
+							}
+						}
+						else
+						{
+							cout << "\n\n\t!...Invalid Input...! ... Select Again\n" << endl;
+							goto again;
+						}
+					}
+					else
+					{
+						cout << "\n\n\tStudent not Found\n" << endl;
+					}
+				}
+				break;
+			case '6':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\nEnter Student ID to make changes: ";
+					cin >> student.id;
+					if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+					{
+						goto menu;
+						system("cls");
+					}
+					if (isFound(students, student.id))
+					{
+						int index = studentIndex(students, student.id);
+						if (!isEmpty_Course(students, index))
+						{
+							again4:
+							cout << "\n\nEnter Course ID to make changes: ";
+							cin >> student.id;
+							if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+							{
+								system("cls");
+								goto menu;
+							}
+							if (isCourse_Found(students, student.id, index) != -1)
+							{
+								int courseIndex = isCourse_Found(students, student.id, index);
+								string select1;
+								again3:
+								cout << "\n\nWhat you want to change? (name or id): ";
+								cin >> select1;
+								if (select1 == "name" || select1 == "NAME" || select1[0] == 'N' || select1[0] == 'n')
+								{
+									cout << "\n\nExisting Name is: " << students[index].courses[courseIndex].name;
+									cout << "\n\nEnter new name: ";
+									cin.ignore();
+									getline(cin, students[index].courses[courseIndex].name);
+									cout << "\n\n\tChange successfully\n" << endl;
+								}
+								else if (select1 == "id" || select1 == "ID" || select1[0] == 'i' || select1[0] == 'I')
+								{
+								again2:
+									cout << "\n\nExisting ID is: " << students[index].courses[courseIndex].id;
+									cout << "\n\nEnter new id: ";
+									cin >> student.id;
+									if (student.id == "back" || student.id[0] == 'b' || student.id == "B")
+									{
+										system("cls");
+										goto menu;
+									}
+									if (isUnique_courseId(students, student.id , index))
+									{
+										students[index].courses[courseIndex].id = student.id;
+										cout << "\n\n\tChange successfully\n" << endl;
+									}
+									else
+									{
+										cout << "\n\n\tID used ... Enter a Unique ID\n" << endl;
+										goto again2;
+									}
+								}
+								else
+								{
+									cout << "\n\n\t!...Invalid Input...! ... Select Again\n" << endl;
+									goto again3;
+								}
+
+							}
+							else
+							{
+								cout << "\n\n\tCourse ID not Found\n" << endl;
+								goto again4;
+							}
+						}
+						else
+						{
+							cout << "\n\n\t" << students[index].name << " has not enrolled his/her course yet ... Can't make changes\n" << endl;
+							Sleep(500);
+						}
+					}
+					else
+					{
+						cout << "\n\n\tStudent not Found\n" << endl;
+					}
+				}
+				break;
+			case '7':
+				if (isEmpty(students))
+				{
+					cout << "\n\n\t!... LIST IS EMPTY ... ADD STUDENT FIRST ...!\n" << endl;
+				}
+				else
+				{
+					cout << "\n\nEnter student id to Delete: ";
+					cin >> student.id;
+					if (student.id == "back" || student.id[0] == 'b' || student.id[0] == 'B')
+					{
+						goto menu;
+						system("cls");
+					}
+					if (isFound(students, student.id))
+					{
+						int index = studentIndex(students, student.id);
+						deleteStudent(students , index , studentCount);
+						cout << "\n\n\t!...Student Deleted Successfully...!\n" << endl;
+					}
+					else
+					{
+						cout << "\n\n\tStudent not Found\n" << endl;
+					}
+				}
+				break;
+			case '8':
+				cout << "\n\n--------------------------------------------------------\n";
+				if (studentCount == 0)
+				{
+					cout << "\n\n\tNo Student has been enrolled yet.\n" << endl;
+					cout << "\n\n\tTotal Count of Students is: " << studentCount << endl << endl;
+				}
+				else
+				{
+					cout << "\n\n\t" << studentCount << " Students has been enrolled yet.\n" << endl;
+					cout << "\n\n\tTotal Count of Students is: " << studentCount << endl << endl;
+				}
+				cout << "\n\n--------------------------------------------------------\n";
+				cout << "\n\n\n\n\n\n\t!...Press any key to coutinue...!\n" << endl;
+				system("PAUSE");
+				break;
+			case '9':
+				cout << "\n\n\t!Total number of added Students: " << totalAdded_students << "\n" << endl;
+				break;
+			case '0':
+				cout << "\n\n\t!...Program has been exited successfully with return value 0...!\n" << endl;
+				return 0;
+				break;
+			default:
+				cout << "\n\n\t!...Invalid Input...!\n" << endl;
+				break;
+		}
+		Sleep(1500);
+		system("CLS");
+	}
+
+}
+
+
+//-------------USER DEFINE FUNCTIONS-------------//
+
+void display()
+{
+	cout << "-------------Enter back to go back-------------\n\n" << endl;
+	cout << "1.Add student" << endl;
+	cout << "2.Add course" << endl;
+	cout << "3.Search Student" << endl;
+	cout << "4.Display Students Record" << endl;
+	cout << "5.Change Data of Student(Student name , Student id)" << endl;
+	cout << "6.Change Course of Student(Course name , Course id)" << endl;
+	cout << "7.Delete Student" << endl;
+	cout << "8.Number of Student in the list." << endl;
+	cout << "9.Total added students." << endl;
+	cout << "0.Exit Program" << endl;
+	cout << "Select: ";
+}
+
+bool isUnique_Id(Student students[], string id)
+{
+	for (int i = 0; i < no_of_student; i++)
+	{
+		if (id == students[i].id)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isUnique_courseId(Student students[], string id , int index)
+{
+	for (int i = 0; i < no_of_courses ; i++)
+	{
+		if (id == students[index].courses[i].id)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isFound(Student students[] , string id)
+{
+	for (int i = 0; i < no_of_student; i++)
+	{
+		if (id == students[i].id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int isCourse_Found(Student students[], string id , int index)
+{
+	for (int i = 0; i < no_of_courses; i++)
+	{
+		if (id == students[index].courses[i].id)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+int studentIndex(Student students[], string id)
+{
+	for (int i = 0; i < no_of_student; i++)
+	{
+		if (id == students[i].id)
+		{
+			return i;
+		}
+	}
+}
+
+void displayData(Student students[] , int index)
+{
+	cout << "\t\t" << students[index].name;
+	int length = 0;
+	for (length = 0; students[index].name[length] != '\0'; length++) {}
+	if (length < 8)
+	{
+		cout << "\t\t\t" << students[index].id << endl;
+	}
+	else if (length > 17)
+	{
+		cout << "\t" << students[index].id << endl;
+	}
+	else
+	{
+		cout << "\t\t" << students[index].id << endl;
+	}
+
+	if (students[index].courses[0].name.empty() && students[index].courses[0].id.empty())
+	{
+		cout << "\n\n\t" << students[index].name << " has not enrolled his/her subjects yet.\n\n" << endl;
+	}
+	else
+	{
+		cout << "\n\n\t\tCourse NAME\t:\tCourse ID\n" << endl;
+		for (int i = 0; i < no_of_courses; i++)
+		{
+			cout << "Course no " << i + 1 << "\t" << students[index].courses[i].name << "\t\t\t" << students[index].courses[i].id << endl;
+			cout << "\n\n" << endl;
+		}
+	}
+}
+
+bool isEmpty(Student students[])
+{
+	for (int i = 0; i < no_of_student; i++)
+	{
+		if (students[i].id.empty() && students[i].name.empty())
+		{
+			return true;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return false;
+}
+
+bool isEmpty_Course(Student students[] , int index)
+{
+	for (int i = 0; i < no_of_courses; i++)
+	{
+		if (students[index].courses[i].name.empty() == 0 && students[index].courses[i].id.empty() == 0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void sortID(Student students[] , int count)
+{
+	Student swap;
+	for (int i = 0; i < count + 1; i++)
+	{
+		for (int j = i + 1 ; j < count + 1; j++)
+		{
+			if (students[i].id > students[j].id)
+			{
+				swap = students[i];
+				students[i] = students[j];
+				students[j] = swap;
+			}
+		}
+	}
+}
+
+void deleteStudent(Student students[], int index , int& count)
+{
+	cout << endl << endl << students[index].name << endl;
+	students[index].name.clear();
+	students[index].id.clear();
+	if (students[index].courses[0].name.empty() == 0 && students[index].courses[0].id.empty() == 0)
+	{
+		for (int i = 0; i < no_of_courses; i++)
+		{
+			students[index].courses[i].name.clear();
+			students[index].courses[i].id.clear();
+		}
+	}
+	count--;
+	for (int i = index; i < count; i++)
+	{
+		students[i] = students[i + 1];
+	}
+}
