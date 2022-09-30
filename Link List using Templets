@@ -1,0 +1,659 @@
+#include<iostream>
+#include<Windows.h>
+using namespace std;
+
+void displayMenu();
+void pleaseWait();
+
+template <class Type>
+class linkList {
+	struct Node {
+		Type data;
+		Node* nextAddress;
+	};
+	Node* head;
+	int count;
+public:
+	bool isEmptyList()
+	{
+		if (head == NULL)
+			return true;
+		return false;
+	}
+	linkList()
+	{
+		this->head = NULL;
+		this->count = 0;
+	}
+	void insertAtEnd(Type d)
+	{
+		Node* newNode = new Node();
+		newNode->data = d;
+		newNode->nextAddress = NULL;
+		if (this->head == NULL)
+		{
+			this->head = newNode;
+		}
+		else
+		{
+			Node* temp;
+			temp = head;
+			while (temp->nextAddress != NULL)
+			{
+				temp = temp->nextAddress;
+			}
+			temp->nextAddress = newNode;
+		}
+		count++;
+	}
+	void insertAtFirst(Type d)
+	{
+		Node* newNode = new Node();
+		newNode->data = d;
+		if (head == NULL)
+		{
+			newNode->nextAddress = NULL;
+		}
+		else
+		{
+			newNode->nextAddress = head;
+		}
+		head = newNode;
+	}
+	void displayList()
+	{
+		if (!isEmptyList())
+		{
+			Node* ptr = head;
+			cout << "\n\n\t\t\t\t\t";
+			cout << "Current\t\t\tNext\t\t  Data\n\n";
+			for (; ptr != NULL; ptr = ptr->nextAddress)
+			{
+				cout << "\n\n\t\t\t\t\t";
+				cout << ptr << "\t" << ptr->nextAddress << " : ";
+				cout << ptr->data << endl;
+			}
+		}
+		else
+		{
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t...LIST IS EMPTY...\n\n";
+		}
+	}
+	int totalNodes() const {
+		return this->count;
+	}
+	void searchData(Type d)
+	{
+		Node* ptr = head;
+		int count = 1;
+		bool flag = false;
+		for (; ptr != NULL; ptr = ptr->nextAddress, count++)
+		{
+			if (ptr->data == d)
+			{
+				cout << "\n\n\t\t\t\t\t";
+				cout << ptr->data << " Found at node no: " << count << endl;
+				flag = true;
+			}
+		}
+		if (!flag)
+		{
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tNOT FOUND\n\n";
+		}
+	}
+	void deleteNode(Type d)
+	{
+		Node* ptr = head;
+		bool isFound = false;
+		if (head != NULL)
+		{
+			if (head->data == d)
+			{
+				Node* temp = ptr;
+				head = head->nextAddress;
+				delete temp;
+				cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t...NODE DELETED...\n\n";
+			}
+			else
+			{
+				for (; ptr->nextAddress != NULL; ptr = ptr->nextAddress)
+				{
+					if (ptr->nextAddress->data == d)
+					{
+						isFound = true;
+						break;
+					}
+				}
+				if (isFound)
+				{
+					if (ptr->nextAddress->nextAddress != NULL)
+					{
+						Node* temp = ptr->nextAddress;
+						ptr->nextAddress = ptr->nextAddress->nextAddress;
+						delete temp;
+						cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t...NODE DELETED...\n\n";
+					}
+				}
+				else
+				{
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t...NOT FOUND...\n\n";
+				}
+			}
+		}
+		else
+		{
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t...LIST IS EMPTY...\n\n";
+		}
+	}
+	void deleteList()
+	{
+		Node* ptr;
+		while (head != NULL)
+		{
+			cout << "\n\n\t\t\t\t\t";
+			cout << head << endl;
+			ptr = head; //set temp to the current node
+			head = head->nextAddress; //advance first to the next node
+			delete ptr;
+		}
+		this->head = NULL;
+		//cout << "\n\n\n\n\t\t\t\tList Deleted Successfully";
+	}
+	~linkList()
+	{
+		deleteList();
+	}
+};
+
+int main()
+{
+	mainMenu:
+	cout << "\t\t\t\t\t\t:LINK LIST:\n\n";
+	cout << "\t\t\t\t\t1: Integer\n";
+	cout << "\t\t\t\t\t2: Character\n";
+	cout << "\t\t\t\t\t3: Float\n";
+	cout << "\t\t\t\t\t4: Double\n";
+	cout << "\t\t\t\t\t5: String\n";
+	cout << "\n\t\t\t\t\tSelect: ";
+	char select;
+	cin >> select;
+	system("cls");
+	switch (select)
+	{
+		case '1':
+		{
+			linkList<int> l;
+			int temp = 0;
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(700);
+			system("cls");
+			while (1)
+			{
+				displayMenu();
+				cout << "\n\t\t\t\t\tSelect: ";
+				cin >> select;
+				cout << "\n\n\t\t\t\t----------------------------------------------\n\n";
+				switch (select) {
+				case '1':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtEnd(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '2':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtFirst(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '3':
+					cout << "\n\n\t\t\t\t\tEnter Value to search data: ";
+					cin >> temp;
+					system("cls");
+					l.searchData(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '4':
+					system("cls");
+					l.displayList();
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '5':
+					cout << "\n\n\t\t\t\t\tEnter Value to Delete Node: ";
+					cin >> temp;
+					system("cls");
+					l.deleteNode(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '6':
+					l.deleteList();
+					break;
+				case '7':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tTotal Number of Nodes: ";
+					cout << l.totalNodes();
+					cout << "\n\n\t\t\t\t\t\t";
+					system("pause");
+					break;
+				case '8':
+					pleaseWait();
+					goto mainMenu;
+					break;
+				case '9':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tExiting";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(700);
+					system("cls");
+					cout << "\n\n\t\t\t\t\tProgram exited successfully with return value 0\n\n";
+					return 0;
+				}
+				Sleep(1000);
+				system("cls");
+			}
+		}
+			break;
+		case '2':
+		{
+			linkList<char> l;
+			char temp = '\0';
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(700);
+			system("cls");
+			while (1)
+			{
+				displayMenu();
+				cout << "\n\t\t\t\t\tSelect: ";
+				cin >> select;
+				cout << "\n\n\t\t\t\t----------------------------------------------\n\n";
+				switch (select) {
+				case '1':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtEnd(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '2':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtFirst(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '3':
+					cout << "\n\n\t\t\t\t\tEnter Value to search data: ";
+					cin >> temp;
+					system("cls");
+					l.searchData(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '4':
+					system("cls");
+					l.displayList();
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '5':
+					cout << "\n\n\t\t\t\t\tEnter Value to Delete Node: ";
+					cin >> temp;
+					system("cls");
+					l.deleteNode(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '6':
+					l.deleteList();
+					break;
+				case '7':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tTotal Number of Nodes: ";
+					cout << l.totalNodes();
+					cout << "\n\n\t\t\t\t\t\t";
+					system("pause");
+					break;
+				case '8':
+					pleaseWait();
+					goto mainMenu;
+					break;
+				case '9':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tExiting";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(700);
+					system("cls");
+					cout << "\n\n\t\t\t\t\tProgram exited successfully with return value 0\n\n";
+					return 0;
+				}
+				//Sleep(1000);
+				system("cls");
+			}
+		}
+			break;
+		case '3':
+		{
+			linkList<float> l;
+			float temp = 0.0;
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(700);
+			system("cls");
+			while (1)
+			{
+				displayMenu();
+				cout << "\n\t\t\t\t\tSelect: ";
+				cin >> select;
+				cout << "\n\n\t\t\t\t----------------------------------------------\n\n";
+				switch (select) {
+				case '1':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtEnd(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '2':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtFirst(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '3':
+					cout << "\n\n\t\t\t\t\tEnter Value to search data: ";
+					cin >> temp;
+					system("cls");
+					l.searchData(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '4':
+					system("cls");
+					l.displayList();
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '5':
+					cout << "\n\n\t\t\t\t\tEnter Value to Delete Node: ";
+					cin >> temp;
+					system("cls");
+					l.deleteNode(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '6':
+					l.deleteList();
+					break;
+				case '7':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tTotal Number of Nodes: ";
+					cout << l.totalNodes();
+					cout << "\n\n\t\t\t\t\t\t";
+					system("pause");
+					break;
+				case '8':
+					pleaseWait();
+					goto mainMenu;
+					break;
+				case '9':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tExiting";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(700);
+					system("cls");
+					cout << "\n\n\t\t\t\t\tProgram exited successfully with return value 0\n\n";
+					return 0;
+				}
+				Sleep(1000);
+				system("cls");
+			}
+		}
+			break;
+		case '4':
+		{
+			linkList<double> l;
+			double temp = 0.0;
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(700);
+			system("cls");
+			while (1)
+			{
+				displayMenu();
+				cout << "\n\t\t\t\t\tSelect: ";
+				cin >> select;
+				cout << "\n\n\t\t\t\t----------------------------------------------\n\n";
+				switch (select) {
+				case '1':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtEnd(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '2':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtFirst(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '3':
+					cout << "\n\n\t\t\t\t\tEnter Value to search data: ";
+					cin >> temp;
+					system("cls");
+					l.searchData(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '4':
+					system("cls");
+					l.displayList();
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '5':
+					cout << "\n\n\t\t\t\t\tEnter Value to Delete Node: ";
+					cin >> temp;
+					system("cls");
+					l.deleteNode(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '6':
+					l.deleteList();
+					break;
+				case '7':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tTotal Number of Nodes: ";
+					cout << l.totalNodes();
+					cout << "\n\n\t\t\t\t\t\t";
+					system("pause");
+					break;
+				case '8':
+					pleaseWait();
+					goto mainMenu;
+					break;
+				case '9':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tExiting";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(700);
+					system("cls");
+					cout << "\n\n\t\t\t\t\tProgram exited successfully with return value 0\n\n";
+					return 0;
+				}
+				Sleep(1000);
+				system("cls");
+			}
+		}
+			break;
+		case '5':
+		{
+			linkList<string> l;
+			string temp;
+			cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(500);
+			cout << " . ";
+			Sleep(700);
+			system("cls");
+			while (1)
+			{
+				displayMenu();
+				cout << "\n\t\t\t\t\tSelect: ";
+				cin >> select;
+				cout << "\n\n\t\t\t\t----------------------------------------------\n\n";
+				switch (select) {
+				case '1':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtEnd(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '2':
+					cout << "\n\n\t\t\t\t\tEnter Value to insert on Node: ";
+					cin >> temp;
+					l.insertAtFirst(temp);
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tInserted successfully\n\n";
+					break;
+				case '3':
+					cout << "\n\n\t\t\t\t\tEnter Value to search data: ";
+					cin >> temp;
+					system("cls");
+					l.searchData(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '4':
+					system("cls");
+					l.displayList();
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '5':
+					cout << "\n\n\t\t\t\t\tEnter Value to Delete Node: ";
+					cin >> temp;
+					system("cls");
+					l.deleteNode(temp);
+					cout << "\n\n\n\t\t\t\t\t";
+					system("pause");
+					break;
+				case '6':
+					l.deleteList();
+					break;
+				case '7':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tTotal Number of Nodes: ";
+					cout << l.totalNodes();
+					cout << "\n\n\t\t\t\t\t\t";
+					system("pause");
+					break;
+				case '8':
+					pleaseWait();
+					goto mainMenu;
+					break;
+				case '9':
+					system("cls");
+					cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tExiting";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(500);
+					cout << " . ";
+					Sleep(700);
+					system("cls");
+					cout << "\n\n\t\t\t\t\tProgram exited successfully with return value 0\n\n";
+					return 0;
+				}
+				Sleep(1000);
+				system("cls");
+			}
+			break;
+		}
+	}
+	system("pause");
+	return 0;
+}
+
+void displayMenu()
+{
+	cout << "\t\t\t\t\t\t:MENU:\n\n";
+	cout << "\t\t\t\t\t1: Insert new Node at end\n";
+	cout << "\t\t\t\t\t2: Insert new Node at First\n";
+	cout << "\t\t\t\t\t3: Search Data in List\n";
+	cout << "\t\t\t\t\t4: Display List\n";
+	cout << "\t\t\t\t\t5: Delete a node\n";
+	cout << "\t\t\t\t\t6: Delete current list\n";
+	cout << "\t\t\t\t\t7: Number of nodes in List\n";
+	cout << "\t\t\t\t\t8: Return to main menu\n";
+	cout << "\t\t\t\t\t9: Exit Program\n";
+}
+
+void pleaseWait()
+{
+	system("cls");
+	cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\tPlease wait";
+	Sleep(500);
+	cout << " . ";
+	Sleep(500);
+	cout << " . ";
+	Sleep(500);
+	cout << " . ";
+	Sleep(700);
+	system("cls");
+}
