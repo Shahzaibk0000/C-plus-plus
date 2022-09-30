@@ -1,0 +1,644 @@
+#include<iostream>
+using namespace std;
+
+class Student {
+private:
+	char* firstName;
+	char* lastName;
+	char* course;
+public:
+	Student(const char* f = nullptr, const char* l = nullptr, const char* c = nullptr)
+	{
+		if (f != nullptr)
+		{
+			int size = strlen(f);
+			this->firstName = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->firstName[i] = f[i];
+			}
+			this->firstName[size] = '\0';
+		}
+		else
+		{
+			this->firstName = nullptr;
+		}
+		if (l != nullptr)
+		{
+			int size = strlen(l);
+			this->lastName = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->lastName[i] = l[i];
+			}
+			this->lastName[size] = '\0';
+		}
+		else
+		{
+			this->lastName = nullptr;
+		}
+		if (c != nullptr)
+		{
+			int size = strlen(c);
+			this->course = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->course[i] = c[i];
+			}
+			this->course[size] = '\0';
+		}
+		else
+		{
+			this->course = nullptr;
+		}
+	}
+	Student(const Student& obj)
+	{
+		if (obj.firstName != nullptr)
+		{
+			int size = strlen(obj.firstName);
+			this->firstName = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->firstName[i] = obj.firstName[i];
+			}
+			this->firstName[size] = '\0';
+		}
+		else
+		{
+			this->firstName = nullptr;
+		}
+		if (obj.lastName != nullptr)
+		{
+			int size = strlen(obj.lastName);
+			this->lastName = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->lastName[i] = obj.lastName[i];
+			}
+			this->lastName[size] = '\0';
+		}
+		else
+		{
+			this->lastName = nullptr;
+		}
+		if (obj.course != nullptr)
+		{
+			int size = strlen(obj.course);
+			this->course = new char[size + 1];
+			for (int i = 0; i < size; i++)
+			{
+				this->course[i] = obj.course[i];
+			}
+			this->course[size] = '\0';
+		}
+		else
+		{
+			this->course = nullptr;
+		}
+	}
+	void set_firstName(const char* f)
+	{
+		if (this->firstName != nullptr)
+		{
+			delete[] this->firstName;
+		}
+		int size = strlen(f);
+		this->firstName = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			this->firstName[i] = f[i];
+		}
+		this->firstName[size] = '\0';
+	}
+	void set_lastName(const char* l)
+	{
+		if (this->lastName != nullptr)
+		{
+			delete[] this->lastName;
+		}
+		int size = strlen(l);
+		this->lastName = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			this->lastName[i] = l[i];
+		}
+		this->lastName[size] = '\0';
+	}
+	void setCourse(const char* c)
+	{
+		if (this->course != nullptr)
+		{
+			delete[] this->course;
+		}
+		int size = strlen(c);
+		this->course = new char[size + 1];
+		for (int i = 0; i < size; i++)
+		{
+			this->course[i] = c[i];
+		}
+		this->course[size] = '\0';
+	}
+	char* get_firstName() const {
+		return this->firstName;
+	}
+	char* get_lastName() const {
+		return this->lastName;
+	}
+	char* getCourse() const {
+		return this->course;
+	}
+	virtual void computeGrade() = 0;
+	virtual void printInfo()const {
+		cout << "First Name: " << this->firstName << endl;
+		cout << "Last Name: " << this->lastName << endl;
+		cout << "Course: " << this->course << endl;
+	}
+};
+
+class OOPStudent :public Student {
+private:
+	double finalAverage;
+	char* finalGrade;
+	double assignment;
+	double project;
+	double midTerm;
+	double finalTerm;
+public:
+	OOPStudent(const char* f = nullptr, const char* l = nullptr, const char* c = nullptr, double a = 0, double p = 0, double mt = 0, double ft = 0):Student(f,l,c)
+	{
+		if (a < 0 && a > 10)
+		{
+			this->assignment = 0.0;
+		}
+		else
+		{
+			this->assignment = a;
+		}
+		if (p < 0 && p > 20)
+		{
+			this->project = 0.0;
+		}
+		else
+		{
+			this->project = p;
+		}
+		if (mt < 0 && mt > 30)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = mt;
+		}
+		if (ft < 0 && ft > 40)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = ft;
+		}
+		computeGrade();
+	}
+	OOPStudent(const OOPStudent& obj) :Student(obj)
+	{
+		if (obj.assignment < 0 && obj.assignment > 10)
+		{
+			this->assignment = 0.0;
+		}
+		else
+		{
+			this->assignment = obj.assignment;
+		}
+		if (obj.project < 0 && obj.project > 20)
+		{
+			this->project = 0.0;
+		}
+		else
+		{
+			this->project = obj.project;
+		}
+		if (obj.midTerm < 0 && obj.midTerm > 30)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = obj.midTerm;
+		}
+		if (obj.finalTerm < 0 && obj.finalTerm > 40)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = obj.finalTerm;
+		}
+		computeGrade();
+	}
+	OOPStudent& operator = (const OOPStudent& rhs)
+	{
+		Student::set_firstName(rhs.get_firstName());
+		Student::set_lastName(rhs.get_lastName());
+		Student::setCourse(rhs.getCourse());
+		this->assignment = rhs.assignment;
+		this->project = rhs.project;
+		this->midTerm = rhs.midTerm;
+		this->finalTerm = rhs.finalTerm;
+		if (this->finalGrade != nullptr)
+		{
+			delete[] this->finalGrade;
+		}
+		computeGrade();
+		return *this;
+	}
+	virtual void computeGrade()
+	{
+		double total = this->assignment + this->project + this->midTerm + this->finalTerm;
+		this->finalAverage = total;
+		if (total >= 90 && total <= 100)
+		{
+			this->finalGrade = new char{'A'};
+		}
+		else if(total >= 86 && total <= 89)
+		{
+			this->finalGrade = new char[2]{ 'A','-'};
+		}
+		else if (total >= 81 && total <= 85)
+		{
+			this->finalGrade = new char[2]{ 'B','+' };
+		}
+		else if (total >= 77 && total <= 80)
+		{
+			this->finalGrade = new char;
+			*finalGrade = 'B';
+		}
+		else if (total >= 72 && total <= 76)
+		{
+			this->finalGrade = new char[2]{ 'B','-' };
+		}
+		else if (total >= 68 && total <= 71)
+		{
+			this->finalGrade = new char[2]{ 'C','+' };
+		}
+		else if (total >= 63 && total <= 67)
+		{
+			this->finalGrade = new char{ 'C' };
+		}
+		else if (total >= 58 && total <= 62)
+		{
+			this->finalGrade = new char[2]{ 'C','-' };
+		}
+		else if (total >= 54 && total <= 57)
+		{
+			this->finalGrade = new char[2]{ 'D','+' };
+		}
+		else if (total >= 50 && total <= 53)
+		{
+			this->finalGrade = new char{ 'D' };
+		}
+		else if (total < 50)
+		{
+			this->finalGrade = new char{ 'F' };
+		}
+	}
+	const char* getGrade() const {
+		return this->finalGrade;
+	}
+	double get_finalAverage() const {
+		return this->finalAverage;
+	}
+};
+
+class DBStudent :public Student {
+private:
+	double finalAverage;
+	char* finalGrade;
+	double project;
+	double midTerm;
+	double finalTerm;
+public:
+	DBStudent(const char* f = nullptr, const char* l = nullptr, const char* c = nullptr, double p = 0, double mt = 0, double ft = 0) :Student(f, l, c)
+	{
+		if (p < 0 && p > 25)
+		{
+			this->project = 0.0;
+		}
+		else
+		{
+			this->project = p;
+		}
+		if (mt < 0 && mt > 35)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = mt;
+		}
+		if (ft < 0 && ft > 40)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = ft;
+		}
+		computeGrade();
+	}
+	DBStudent(const DBStudent& obj) :Student(obj)
+	{
+		if (obj.project < 0 && obj.project > 20)
+		{
+			this->project = 0.0;
+		}
+		else
+		{
+			this->project = obj.project;
+		}
+		if (obj.midTerm < 0 && obj.midTerm > 30)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = obj.midTerm;
+		}
+		if (obj.finalTerm < 0 && obj.finalTerm > 40)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = obj.finalTerm;
+		}
+		computeGrade();
+	}
+	DBStudent& operator = (const DBStudent& rhs)
+	{
+		Student::set_firstName(rhs.get_firstName());
+		Student::set_lastName(rhs.get_lastName());
+		Student::setCourse(rhs.getCourse());
+		this->project = rhs.project;
+		this->midTerm = rhs.midTerm;
+		this->finalTerm = rhs.finalTerm;
+		if (this->finalGrade != nullptr)
+		{
+			delete[] this->finalGrade;
+		}
+		computeGrade();
+		return *this;
+	}
+	virtual void computeGrade()
+	{
+		double total = this->project + this->midTerm + this->finalTerm;
+		this->finalAverage = total;
+		if (total >= 90 && total <= 100)
+		{
+			this->finalGrade = new char{ 'A' };
+		}
+		else if (total >= 86 && total <= 89)
+		{
+			this->finalGrade = new char[2]{ 'A','-' };
+		}
+		else if (total >= 81 && total <= 85)
+		{
+			this->finalGrade = new char[2]{ 'B','+' };
+		}
+		else if (total >= 77 && total <= 80)
+		{
+			this->finalGrade = new char;
+			*finalGrade = 'B';
+		}
+		else if (total >= 72 && total <= 76)
+		{
+			this->finalGrade = new char[2]{ 'B','-' };
+		}
+		else if (total >= 68 && total <= 71)
+		{
+			this->finalGrade = new char[2]{ 'C','+' };
+		}
+		else if (total >= 63 && total <= 67)
+		{
+			this->finalGrade = new char{ 'C' };
+		}
+		else if (total >= 58 && total <= 62)
+		{
+			this->finalGrade = new char[2]{ 'C','-' };
+		}
+		else if (total >= 54 && total <= 57)
+		{
+			this->finalGrade = new char[2]{ 'D','+' };
+		}
+		else if (total >= 50 && total <= 53)
+		{
+			this->finalGrade = new char{ 'D' };
+		}
+		else if (total < 50)
+		{
+			this->finalGrade = new char{ 'F' };
+		}
+	}
+	const char* getGrade() const {
+		return this->finalGrade;
+	}
+	double get_finalAverage() const {
+		return this->finalAverage;
+	}
+};
+
+class LAStudent :public Student {
+private:
+	double finalAverage;
+	char* finalGrade;
+	double quiz;
+	double assignment;
+	double midTerm;
+	double finalTerm;
+public:
+	LAStudent(const char* f = nullptr, const char* l = nullptr, const char* c = nullptr, double q = 0, double a = 0, double mt = 0, double ft = 0) :Student(f, l, c)
+	{
+		if (q < 0 && q > 15)
+		{
+			this->quiz = 0.0;
+		}
+		else
+		{
+			this->quiz = q;
+		}
+		if (a < 0 && a > 25)
+		{
+			this->assignment = 0.0;
+		}
+		else
+		{
+			this->assignment = a;
+		}
+		if (mt < 0 && mt > 25)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = mt;
+		}
+		if (ft < 0 && ft > 35)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = ft;
+		}
+		computeGrade();
+	}
+	LAStudent(const LAStudent& obj) :Student(obj)
+	{
+		if (obj.quiz < 0 && obj.quiz > 15)
+		{
+			this->quiz = 0.0;
+		}
+		else
+		{
+			this->quiz = obj.quiz;
+		}
+		if (obj.assignment < 0 && obj.assignment > 25)
+		{
+			this->assignment = 0.0;
+		}
+		else
+		{
+			this->assignment = obj.assignment;
+		}
+		if (obj.midTerm < 0 && obj.midTerm > 25)
+		{
+			this->midTerm = 0.0;
+		}
+		else
+		{
+			this->midTerm = obj.midTerm;
+		}
+		if (obj.finalTerm < 0 && obj.finalTerm > 35)
+		{
+			this->finalTerm = 0.0;
+		}
+		else
+		{
+			this->finalTerm = obj.finalTerm;
+		}
+		computeGrade();
+	}
+	LAStudent& operator = (const LAStudent& rhs)
+	{
+		Student::set_firstName(rhs.get_firstName());
+		Student::set_lastName(rhs.get_lastName());
+		Student::setCourse(rhs.getCourse());
+		this->quiz = rhs.quiz;
+		this->assignment = rhs.assignment;
+		this->midTerm = rhs.midTerm;
+		this->finalTerm = rhs.finalTerm;
+		if (this->finalGrade != nullptr)
+		{
+			delete[] this->finalGrade;
+		}
+		computeGrade();
+		return *this;
+	}
+	virtual void computeGrade()
+	{
+		double total = this->quiz + this->assignment + this->midTerm + this->finalTerm;
+		this->finalAverage = total;
+		if (total >= 90 && total <= 100)
+		{
+			this->finalGrade = new char{ 'A' };
+		}
+		else if (total >= 86 && total <= 89)
+		{
+			this->finalGrade = new char[2]{ 'A','-' };
+		}
+		else if (total >= 81 && total <= 85)
+		{
+			this->finalGrade = new char[2]{ 'B','+' };
+		}
+		else if (total >= 77 && total <= 80)
+		{
+			this->finalGrade = new char;
+			*finalGrade = 'B';
+		}
+		else if (total >= 72 && total <= 76)
+		{
+			this->finalGrade = new char[2]{ 'B','-' };
+		}
+		else if (total >= 68 && total <= 71)
+		{
+			this->finalGrade = new char[2]{ 'C','+' };
+		}
+		else if (total >= 63 && total <= 67)
+		{
+			this->finalGrade = new char{ 'C' };
+		}
+		else if (total >= 58 && total <= 62)
+		{
+			this->finalGrade = new char[2]{ 'C','-' };
+		}
+		else if (total >= 54 && total <= 57)
+		{
+			this->finalGrade = new char[2]{ 'D','+' };
+		}
+		else if (total >= 50 && total <= 53)
+		{
+			this->finalGrade = new char{ 'D' };
+		}
+		else if (total < 50)
+		{
+			this->finalGrade = new char{ 'F' };
+		}
+	}
+	const char* getGrade() const {
+		return this->finalGrade;
+	}
+	double get_finalAverage() const {
+		return this->finalAverage;
+	}
+};
+
+class StudentList {
+private:
+	Student* array[100];
+	int count;
+public:
+	StudentList()
+	{
+		this->array[100] = nullptr;
+		this->count = 0;
+	}
+	void addStudent(Student* stu)
+	{
+		if (stu != nullptr)
+		{
+			array[count] = stu;
+			count++;
+		}
+	}
+	void showList() const {
+		cout << "\n\nLAST\t\tFIRST\t\tCOURSE\n\n";
+		const char* l = array[count]->get_lastName();
+		const char* f = array[count]->get_firstName();
+		const char* c = array[count]->getCourse();
+		for (int i = 0; i < count; i++)
+		{
+			cout << this->array[count]->get_lastName() << "\t\t" << this->array[count]->get_firstName() << "\t\t" << this->array[count]->getCourse() << "\n" << endl;
+			this->array[count]->printInfo();
+		}
+	}
+};
+
+int main()
+{
+	StudentList list;
+	Student* s1 = new LAStudent("Shahzaib","Khan","LA", 12.0, 12.3, 3.3, 5.9);
+	list.addStudent(s1);
+	list.showList();
+	return 0;
+}
