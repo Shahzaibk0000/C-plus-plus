@@ -97,23 +97,31 @@ public:
 	Node* getHead() {
 		return this->head;
 	}
-	void deleteNode(int data)
+	bool deleteNode(int data)
 	{
 		if (head == NULL)
-			return;
-		if (head->next == NULL)
+			return false;
+		if (head->data == data)
 		{
-			Node* temp = head;
-			head = NULL;
-			cout << "\n\n" << data << " deleted successfully\n\n";
-			delete[] temp;
+			if (head->next == NULL)
+			{
+				Node* temp = head;
+				head = NULL;
+				cout << "\n\n" << data << " deleted successfully\n\n";
+				delete[] temp;
+				return true;
+			}
 		}
-		if (head->data == data && head->next != NULL)
+		if (head->data == data)
 		{
-			Node* temp = head;
-			head = head->next;
-			cout << "\n\n" << data << " deleted successfully\n\n";
-			delete[] temp;
+			if (head->next != NULL)
+			{
+				Node* temp = head;
+				head = head->next;
+				cout << "\n\n" << data << " deleted successfully\n\n";
+				delete[] temp;
+				return true;
+			}
 		}
 		else
 		{
@@ -135,11 +143,10 @@ public:
 				previous->next = iterator->next;
 				delete[] temp;
 				cout << "\n\n" << data << " deleted successfully\n\n";
+				return true;
 			}
-			else
-			{
-				cout << "\n\n" << data << " not found\n\n";
-			}
+			cout << "\n\n" << data << " not found\n\n";
+			return false;
 		}
 	}
 	~LinkList() {
