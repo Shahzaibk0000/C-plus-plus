@@ -1,0 +1,128 @@
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+
+//prototype
+int isStringFound(char[] , char* , int, int, int, int* ,int*);
+
+//mainFunction()
+int main(int argc, char** argv)
+{
+    // ----------- Declearing and Initializing variables -------------//
+    char* filename , *checkString;
+    char arr[3000];
+    FILE *ptr;
+    char ch = '\0';
+    int row = 1 , column = 1;
+
+    //Setting parameters from command line
+    filename  = argv[1];
+    checkString = argv[2];
+    printf("File Name: %s\n",filename);
+    printf("Input String: %s\n",checkString);
+    //--------------------------------------------------------------------------//
+    
+    
+    
+    //                      READING DATA FROM FILE
+    //--------------------------------------------------------------------------//
+    //Reading data from file
+    ptr = fopen(filename,"r");
+    if (NULL == ptr) {
+        printf("file can't be opened \n");
+        return 0;
+    }
+    int fileData_Size = 0;
+    for(int i = 0 ; ch != EOF ; i++)
+    {
+        ch = fgetc(ptr);
+        arr[i] = ch;
+        fileData_Size++;
+    }
+    int checkString_Size = 0;
+    for(checkString_Size = 0 ; argv[2][checkString_Size] != '\0' ; checkString_Size++){}
+    //--------------------------------------------------------------------------//
+
+
+
+
+    //                      FORK()
+    //--------------------------------------------------------------------------//
+    
+    int parts = fileData_Size/4 , countOfParts;
+    
+    //Dividing into 2 Parts 1 Parent and 1 Child
+    int pid1 = fork();
+    if(pid1 < 0) {
+        fprintf(stderr, "Fork Failed");
+           return 1;
+    } else if(pid1 == 0) {
+        if(isStringFound(arr , checkString , checkString_Size, 0 , parts  , &row , &column)){
+            printf("Found Through Child '1' at row: %d | column: %d\n", row , column);
+            exit(0);
+            wait(NULL);
+        }
+    } else {
+        if(isStringFound(arr , checkString , checkString_Size, parts , parts+parts  , &row , &column)){
+            printf("Found Through Parent '1' at row: %d | column: %d\n", row , column);
+            exit(0);
+            wait(NULL);
+        }
+    }
+    //Dividing again into 2 Parts 1 Parent and 1 Child
+    
+    int pid2 = fork();
+    if(pid2 < 0) {
+        fprintf(stderr, "Fork Failed");
+   	    return 1;
+    } else if(pid2 == 0) {
+        if(isStringFound(arr , checkString , checkString_Size, parts+parts , parts+parts+parts  , &row , &column)){
+            printf("Found Through Child '2' at row: %d | column: %d\n", row , column);
+            exit(0);
+            wait(NULL);
+        }
+    } else if(pid2 > 0) {
+        if(isStringFound(arr , checkString , checkString_Size, parts+parts+parts , fileData_Size  , &row , &column)){
+            printf("Found Through Parent '2' at row: %d | column: %d\n", row , column);
+            wait(NULL);
+            exit(0);
+        }
+    }
+    exit(0);
+    return 0;
+}
+
+
+//function for search string in array/file data
+int isStringFound(char arr[] , char* checkString , int checkStringSize , int arrStartIndex, int arrEndIndex , int* row , int* column)
+{
+    int isFound = 1;
+    int count = 1;
+    for(int i = arrStartIndex ; i < arrEndIndex ; i++) {
+        isFound = 1;
+        if(arr[i] == '\n') {
+            *row = *row + 1;
+            *column = 0;
+        } else {
+            *column = *column + 1;
+        }
+        if(arr[i] == checkString[0]) {
+            for(int j = i+1 ; j < i + checkStringSize ; j++) {
+                if(arr[j] != checkString[count++]) {
+                    isFound = 0;
+                } if(isFound == 0) {
+                    count = 1;
+                    goto next;
+                }
+            } if (isFound == 1) {
+                return 1;
+                break;
+            }
+        }
+        next:
+        printf("");
+    }
+    return 0;
+}
