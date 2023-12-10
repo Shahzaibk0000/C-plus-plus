@@ -1,0 +1,128 @@
+#include<iostream>
+using namespace std;
+struct Node {
+	char data;
+	Node* next;
+};
+
+class LinkList {
+private:
+	Node* head;
+public:
+	LinkList():head(NULL){}
+	void insertAtEnd(char data) {
+		Node* ptr = new Node();
+		ptr->data = data;
+		if (head == NULL) {
+			head = ptr;
+		}
+		else {
+			Node* iterator = head;
+			while (iterator->next != NULL) {
+				iterator = iterator->next;
+			}
+			iterator->next = ptr;
+		}
+		ptr->next = NULL;
+	}
+	void insertAtFirst(char data)
+	{
+		Node* newNode = new Node();
+		newNode->data = data;
+		if (head == NULL)
+		{
+			newNode->next = NULL;
+		}
+		else
+		{
+			newNode->next = head;
+		}
+		head = newNode;
+	}
+	Node* getHead() {
+		return this->head;
+	}
+	char deleteFromEnd()
+	{
+		char temp;
+		if (head == NULL || head->next == NULL) {
+	        delete head;
+	        head = NULL;
+	        return 0;
+	    }
+	    Node* current = head;
+	    while (current->next->next != NULL) {
+	        current = current->next;
+	    }
+	    temp = current->data;
+	    delete current->next;
+	    current->next = NULL;
+	    return temp;
+	}
+	char deleteFromStart() {
+	    if (head == NULL) {
+	        return 0;
+	    }
+	    char temp1;
+	    Node* temp = head;
+	    temp1 = head->data;
+	    head = head->next;
+	    delete temp;
+	    return temp1;
+	}
+	bool isEmpty()
+	{
+		if(head == NULL){return true;}
+		return false;
+	}
+	~LinkList() {
+		if (head == NULL)
+			return;
+		Node* temp = head;
+		while (temp != NULL) {
+			head = temp;
+			temp = temp->next;
+			delete[] head;
+		}
+	}
+};
+
+
+class Stack{
+	private:
+		LinkList list;
+	public:
+		Stack(){}
+		void push(char data) {
+			list.insertAtFirst(data);
+		}
+		char pop(){ return list.deleteFromStart(); }
+};
+
+int lenStr(const char* str)
+{
+	int len = 0;
+	for(len = 0; str[len] != '\0'; len++){}
+	return len;
+}
+
+char* reverse_string(const char* str)
+{
+	const int len = lenStr(str);
+	char* array = new char[len];
+	for(int i = 0; str[i] != '\0'; i++){array[i] = str[i];}
+	for(int j = len - 1, i = 0 ; j >= 0; j--,i++)
+	{
+		array[i] = str[j];
+	}
+	return array;
+}
+
+int main()
+{
+	const char* input = "Reverse String using Stack implemented using Linklist";
+	char* output = reverse_string(input);
+	cout << "Input String: " << input << endl;
+	cout << "Reversed String: " << output << endl;
+	return 0;
+}
